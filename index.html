@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#6857d9" />
+  <title>Aqsa's Learning Garden</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <button class="brand" data-page="home" aria-label="Go home">
+      <span class="brand-mark">A</span>
+      <span>Aqsa's Learning Garden</span>
+    </button>
+    <nav aria-label="Main navigation">
+      <button data-page="home" class="nav-btn active">Today</button>
+      <button data-page="learn" class="nav-btn">Learn</button>
+      <button data-page="progress" class="nav-btn">Grown-up View</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="homePage" class="page active">
+      <div class="hero">
+        <div>
+          <p class="eyebrow">TODAY'S ADVENTURE</p>
+          <h1>Ready to grow your brain, Aqsa?</h1>
+          <p>Complete one friendly activity in Math, English, and Science.</p>
+          <div class="streak"><span>⭐</span><strong id="streakCount">0 day streak</strong></div>
+        </div>
+        <div class="hero-art" aria-hidden="true">🌱<span>📚</span></div>
+      </div>
+
+      <div class="section-heading">
+        <div><p class="eyebrow">DAILY PRACTICE</p><h2>Three small wins</h2></div>
+        <label>Level
+          <select id="gradeSelect">
+            <option value="1">Grade 1</option>
+            <option value="2">Grade 2</option>
+          </select>
+        </label>
+      </div>
+      <div id="subjectCards" class="subject-grid"></div>
+    </section>
+
+    <section id="exercisePage" class="page">
+      <button id="backHome" class="back-btn">← Back to today</button>
+      <div class="exercise-shell">
+        <div class="exercise-head">
+          <div>
+            <p id="exerciseSubject" class="eyebrow">MATH</p>
+            <h1 id="exerciseTitle">Daily practice</h1>
+          </div>
+          <div class="progress-pill"><span id="questionPosition">1 of 5</span></div>
+        </div>
+        <div class="question-progress"><span id="questionBar"></span></div>
+        <article class="question-card">
+          <button id="speakButton" class="speak-btn hidden" aria-label="Hear the word">🔊 Hear it again</button>
+          <p id="questionPrompt" class="question-prompt"></p>
+          <div id="choiceAnswers" class="choice-grid"></div>
+          <div id="textAnswerWrap" class="answer-wrap">
+            <label for="typedAnswer">Type your answer</label>
+            <input id="typedAnswer" autocomplete="off" inputmode="text" />
+          </div>
+
+          <div class="answer-mode">
+            <button id="typeMode" class="mode-btn active">⌨️ Type</button>
+            <button id="pencilMode" class="mode-btn">✏️ Apple Pencil</button>
+          </div>
+          <div id="pencilPanel" class="pencil-panel hidden">
+            <canvas id="writingCanvas" width="900" height="280" aria-label="Handwriting area"></canvas>
+            <div class="canvas-actions">
+              <button id="clearCanvas" class="secondary-btn">Clear</button>
+              <p>Write your answer, then ask a grown-up to check it.</p>
+            </div>
+          </div>
+
+          <div id="feedback" class="feedback hidden"></div>
+          <div class="question-actions">
+            <button id="submitAnswer" class="primary-btn">Check answer</button>
+            <button id="pencilCorrect" class="primary-btn hidden">A grown-up says correct ✓</button>
+            <button id="pencilTryAgain" class="secondary-btn hidden">Try again</button>
+            <button id="nextQuestion" class="primary-btn hidden">Next question →</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="resultPage" class="page">
+      <div class="result-card">
+        <div id="resultEmoji" class="result-emoji">🌟</div>
+        <p class="eyebrow">ACTIVITY COMPLETE</p>
+        <h1 id="resultHeading">Wonderful work!</h1>
+        <div id="resultScore" class="big-score">0%</div>
+        <p id="resultMessage"></p>
+        <div class="result-actions">
+          <button id="anotherExercise" class="primary-btn">Upgrade to another exercise</button>
+          <button id="resultHome" class="secondary-btn">Back to today</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="learnPage" class="page">
+      <div class="page-title"><p class="eyebrow">LEARNING PATH</p><h1>Skills that grow with Aqsa</h1><p>The test version starts with Grades 1 and 2. Later levels can be added without changing the app design.</p></div>
+      <div id="curriculumGrid" class="curriculum-grid"></div>
+    </section>
+
+    <section id="progressPage" class="page">
+      <div class="page-title"><p class="eyebrow">GROWN-UP VIEW</p><h1>Aqsa's progress</h1><p>Scores are stored on this device in the test version.</p></div>
+      <div class="dashboard-controls">
+        <div class="range-tabs">
+          <button data-range="7" class="range-btn active">7 days</button>
+          <button data-range="30" class="range-btn">Month</button>
+          <button data-range="365" class="range-btn">Year</button>
+        </div>
+        <button id="resetProgress" class="danger-link">Reset test data</button>
+      </div>
+      <div id="summaryCards" class="summary-grid"></div>
+      <div class="chart-card">
+        <div class="chart-heading"><div><h2>Score trend</h2><p>Daily average by subject</p></div><div class="legend"><span class="math-dot">Math</span><span class="english-dot">English</span><span class="science-dot">Science</span></div></div>
+        <canvas id="progressChart" width="1100" height="420" aria-label="Progress line chart"></canvas>
+      </div>
+      <div class="history-card"><h2>Recent activities</h2><div id="historyList"></div></div>
+    </section>
+  </main>
+
+  <footer><span>Made with care for Aqsa</span><span>Test version 0.1</span></footer>
+  <script src="app.js"></script>
+</body>
+</html>
