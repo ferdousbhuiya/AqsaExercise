@@ -2,5 +2,5 @@
    Database functions in supabase-schema.sql enforce all access controls. */
 window.AQSA_CLOUD_CONFIG={
   url:"https://bhddtkujadwssvmxzgad.supabase.co",
-  anonKey:""
+  anonKey:"sb_publishable_MXXDSURnujjdnQ1_K0xcBQ_iGnjwxGT"
 };
