@@ -23,6 +23,10 @@
   </header>
 
   <main>
+    <section class="year-path" aria-label="Year learning path">
+      <div><strong id="pathStatus"></strong><p id="pathNote"></p></div>
+      <div class="day-controls"><label for="pathDay">Explore day</label><input id="pathDay" type="number" min="1" max="365" value="1" /><button id="todayPath" class="secondary-btn">Today</button></div>
+    </section>
     <section id="homePage" class="page active">
       <div class="hero">
         <div>
@@ -61,7 +65,8 @@
         </div>
         <div class="question-progress"><span id="questionBar"></span></div>
         <article class="question-card">
-          <button id="speakButton" class="speak-btn hidden" aria-label="Hear the word">🔊 Hear it again</button>
+          <button id="speakButton" class="speak-btn hidden" aria-label="Read question aloud">🔊 Hear it again</button>
+          <p id="questionKind" class="eyebrow"></p><p id="questionPassage" class="reading-passage hidden"></p>
           <p id="questionPrompt" class="question-prompt"></p>
           <div id="choiceAnswers" class="choice-grid"></div>
           <div id="textAnswerWrap" class="answer-wrap">
@@ -98,7 +103,7 @@
         <p class="eyebrow">ACTIVITY COMPLETE</p>
         <h1 id="resultHeading">Wonderful work!</h1>
         <div id="resultScore" class="big-score">0%</div>
-        <p id="resultMessage"></p>
+        <p id="resultMessage"></p><div class="challenge-box"><h2>Take your learning further</h2><p id="resultChallenge"></p></div>
         <div class="result-actions">
           <button id="anotherExercise" class="primary-btn">Try another 10 questions</button>
           <button id="resultHome" class="secondary-btn">Back to today</button>
@@ -108,13 +113,13 @@
 
     <section id="learnPage" class="page">
       <div class="page-title"><p class="eyebrow">LEARNING PATH</p><h1>Skills that grow with Aqsa</h1><p>Open a lesson, explore its pictures, and listen or read. Try the small check, then start your exercise.</p></div>
-      <label class="learn-level">Learning level<select id="learnGrade"><option value="1">Grade 1</option><option value="2">Grade 2</option></select></label>
+      <p id="learningDay" class="eyebrow"></p><label class="learn-level">Learning level<select id="learnGrade"><option value="1">Grade 1</option><option value="2">Grade 2</option></select></label>
       <div id="curriculumGrid" class="curriculum-grid"></div>
     </section>
 
     <section id="progressPage" class="page">
       <div class="page-title"><p class="eyebrow">GROWN-UP VIEW</p><h1>Aqsa's progress</h1><p>Scores are stored on this device in the test version.</p></div>
-      <div class="dashboard-controls">
+      <label class="path-start">Learning year starts on <input id="yearStart" type="date" /><span>Changing this date changes today’s lesson. Saved scores remain on this device.</span></label><div class="dashboard-controls">
         <div class="range-tabs">
           <button data-range="7" class="range-btn active">7 days</button>
           <button data-range="30" class="range-btn">Month</button>
@@ -131,8 +136,9 @@
     </section>
   </main>
 
-  <footer><span>Made with care for Aqsa</span><span>Test version 0.2</span></footer>
+  <footer><span>Made with care for Aqsa</span><span>365-day learning path · v0.3</span></footer>
   <script src="lessons.js"></script>
+  <script src="year-curriculum.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

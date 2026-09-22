@@ -1,0 +1,14 @@
+{
+  "name": "aqsa-learning-garden-tests",
+  "private": true,
+  "version": "0.3.0",
+  "scripts": {
+    "test": "node year.test.cjs",
+    "test:dom": "node dom.test.cjs",
+    "test:ui": "node ui.test.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.51.1",
+    "jsdom": "26.0.0"
+  }
+}
