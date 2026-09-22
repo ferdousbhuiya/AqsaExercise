@@ -130,14 +130,24 @@
       <label>Game level <select id="gameGrade"><option value="1">Grade 1</option><option value="2">Grade 2</option></select></label><div id="gameMenu" class="game-menu"></div><article id="gameBoard" class="game-board"></article>
     </section>
     <section id="progressPage" class="page">
-      <div class="page-title"><p class="eyebrow">GROWN-UP VIEW</p><h1>Aqsa's progress</h1><p>Scores are stored on this device in the test version.</p></div>
+      <div class="page-title"><p class="eyebrow">GROWN-UP VIEW</p><h1>Aqsa's progress</h1><p>Scores stay on this device and can also synchronize securely across devices.</p></div>
+      <details class="cloud-card" open>
+        <summary>☁️ Access scores on every device</summary>
+        <div id="cloudSignedOut">
+          <p>Use the same username and private parent PIN on another phone, tablet, or computer.</p>
+          <div class="cloud-fields"><label>Username<input id="cloudUsername" autocomplete="username" maxlength="30" placeholder="aqsa"></label><label>Parent PIN<input id="cloudPin" type="password" inputmode="numeric" autocomplete="current-password" minlength="6" maxlength="12" placeholder="6–12 digits"></label></div>
+          <div class="cloud-actions"><button id="cloudSignIn" class="primary-btn">Sign in and sync</button><button id="cloudCreate" class="secondary-btn">Create profile</button></div>
+        </div>
+        <div id="cloudSignedIn" class="hidden"><p>Signed in as <strong id="cloudProfileName"></strong></p><div class="cloud-actions"><button id="cloudSyncNow" class="primary-btn">Sync now</button><button id="cloudSignOut" class="secondary-btn">Sign out on this device</button></div></div>
+        <p id="cloudStatus" class="cloud-status" role="status"></p>
+      </details>
       <label class="path-start">Learning year starts on <input id="yearStart" type="date" /><span>Changing this date changes today’s lesson. Saved scores remain on this device.</span></label><details class="voice-settings" open><summary>Reading voice</summary><p>Choose and preview the English voice that sounds best on your device.</p><label>Voice <select id="voiceSelect"><option value="">Automatic English voice</option></select></label><label>Speed <select id="voiceRate"><option value="0.8">Slower</option><option value="0.95">Comfortable</option><option value="1">Normal</option><option value="1.1">Faster</option></select></label><button id="voiceSample" class="secondary-btn">▶ Try voice</button><button id="voiceStop" class="secondary-btn">Stop</button><p id="voiceStatus" role="status"></p></details><div class="dashboard-controls">
         <div class="range-tabs">
           <button data-range="7" class="range-btn active">7 days</button>
           <button data-range="30" class="range-btn">Month</button>
           <button data-range="365" class="range-btn">Year</button>
         </div>
-        <button id="resetProgress" class="danger-link">Reset test data</button>
+        <button id="resetProgress" class="danger-link">Clear scores from this device</button>
       </div>
       <div id="summaryCards" class="summary-grid"></div>
       <div class="chart-card">
@@ -153,5 +163,7 @@
   <script src="year-curriculum.js"></script>
   <script src="app.js"></script>
   <script src="enhancements.js"></script>
+  <script src="cloud-config.js"></script>
+  <script src="cloud-sync.js"></script>
 </body>
 </html>

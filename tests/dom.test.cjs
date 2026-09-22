@@ -35,7 +35,7 @@ for(const grade of [1,2])for(const subject of ['math','english','science']){
  click('backHome');
 }
 assert.equal(e('getRecords().length'),7);
-assert.equal(JSON.stringify(e('getRecords()[0]')),JSON.stringify(old));
+assert.equal(JSON.stringify(e('getRecords()[0]')),JSON.stringify({...old,recordId:e('getRecords()[0].recordId')}));
 // Punctuation must distinguish a statement from a question.
 e("state.grade=1;state.reviewDay=141;startExercise('english');state.index=state.questions.findIndex(q=>q.skill==='Punctuation');renderQuestion();");
 let wrong=[...w.document.querySelectorAll('[data-choice]')].find(x=>x.dataset.choice.endsWith('?'));
