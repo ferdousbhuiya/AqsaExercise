@@ -30,6 +30,8 @@ To activate cloud sync:
 
 The anon key is intentionally public. The database tables grant it no direct access; only the three validation functions in the schema can create a profile, sign in, and synchronize scores. Do not put the Supabase service-role key in this repository.
 
+If an existing project reports `function gen_salt(unknown, integer) does not exist`, run `supabase-repair.sql` once. It keeps existing profiles and scores and repairs the function schema path.
+
 ## Run locally
 
 Serve this folder with any static web server:
