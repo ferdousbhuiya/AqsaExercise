@@ -18,6 +18,8 @@
     <nav aria-label="Main navigation">
       <button data-page="home" class="nav-btn active">Exercises</button>
       <button data-page="learn" class="nav-btn">Learn</button>
+      <button data-page="preview" class="nav-btn">Year preview</button>
+      <button data-page="games" class="nav-btn">Play & learn</button>
       <button data-page="progress" class="nav-btn">Grown-up View</button>
     </nav>
   </header>
@@ -32,7 +34,7 @@
         <div>
           <p class="eyebrow">TODAY'S ADVENTURE</p>
           <h1>Ready to grow your brain, Aqsa?</h1>
-          <p>Learn something new, then answer 10 questions in each subject every day.</p>
+          <p>Learn something new, then answer 14 mixed questions in each subject every day.</p>
           <div class="streak"><span>⭐</span><strong id="streakCount">0 day streak</strong></div>
         </div>
         <div class="hero-portrait">
@@ -68,6 +70,7 @@
           <button id="speakButton" class="speak-btn hidden" aria-label="Read question aloud">🔊 Hear it again</button>
           <p id="questionKind" class="eyebrow"></p><p id="questionPassage" class="reading-passage hidden"></p>
           <p id="questionPrompt" class="question-prompt"></p>
+          <div id="questionVisual" class="question-visual"></div>
           <div id="choiceAnswers" class="choice-grid"></div>
           <div id="textAnswerWrap" class="answer-wrap">
             <label for="typedAnswer">Type your answer</label>
@@ -105,7 +108,7 @@
         <div id="resultScore" class="big-score">0%</div>
         <p id="resultMessage"></p><div class="challenge-box"><h2>Take your learning further</h2><p id="resultChallenge"></p></div>
         <div class="result-actions">
-          <button id="anotherExercise" class="primary-btn">Try another 10 questions</button>
+          <button id="anotherExercise" class="primary-btn">Try another 14 mixed questions</button>
           <button id="resultHome" class="secondary-btn">Back to today</button>
         </div>
       </div>
@@ -117,9 +120,18 @@
       <div id="curriculumGrid" class="curriculum-grid"></div>
     </section>
 
+    <section id="previewPage" class="page">
+      <div class="page-title"><p class="eyebrow">FAMILY REVIEW</p><h1>Explore all 365 days</h1><p>View every question, its answer and explanation before Aqsa starts. Previewing never changes her scores.</p></div>
+      <div class="preview-controls"><label>Grade <select id="previewGrade"><option value="1">Grade 1</option><option value="2">Grade 2</option></select></label><label>Subject <select id="previewSubject"><option value="all">All subjects</option><option value="math">Math</option><option value="english">English</option><option value="science">Science</option></select></label><label>Day <input id="previewDay" type="number" min="1" max="365" value="1"></label><button id="previewPrev" class="secondary-btn">← Previous</button><button id="previewNext" class="secondary-btn">Next →</button><button id="previewAnswers" class="secondary-btn">Show all answers</button><button id="previewPrint" class="secondary-btn">Print this day</button></div>
+      <details class="day-picker"><summary>Choose any day in the year</summary><div id="previewDays" class="day-grid"></div></details><div id="previewSets"></div>
+    </section>
+    <section id="gamesPage" class="page">
+      <div class="page-title"><p class="eyebrow">PLAY & LEARN</p><h1>Grow skills through play</h1><p>Explore, try again and earn stars. Games do not change exercise scores.</p></div>
+      <label>Game level <select id="gameGrade"><option value="1">Grade 1</option><option value="2">Grade 2</option></select></label><div id="gameMenu" class="game-menu"></div><article id="gameBoard" class="game-board"></article>
+    </section>
     <section id="progressPage" class="page">
       <div class="page-title"><p class="eyebrow">GROWN-UP VIEW</p><h1>Aqsa's progress</h1><p>Scores are stored on this device in the test version.</p></div>
-      <label class="path-start">Learning year starts on <input id="yearStart" type="date" /><span>Changing this date changes today’s lesson. Saved scores remain on this device.</span></label><div class="dashboard-controls">
+      <label class="path-start">Learning year starts on <input id="yearStart" type="date" /><span>Changing this date changes today’s lesson. Saved scores remain on this device.</span></label><details class="voice-settings" open><summary>Reading voice</summary><p>Choose and preview the English voice that sounds best on your device.</p><label>Voice <select id="voiceSelect"><option value="">Automatic English voice</option></select></label><label>Speed <select id="voiceRate"><option value="0.8">Slower</option><option value="0.95">Comfortable</option><option value="1">Normal</option><option value="1.1">Faster</option></select></label><button id="voiceSample" class="secondary-btn">▶ Try voice</button><button id="voiceStop" class="secondary-btn">Stop</button><p id="voiceStatus" role="status"></p></details><div class="dashboard-controls">
         <div class="range-tabs">
           <button data-range="7" class="range-btn active">7 days</button>
           <button data-range="30" class="range-btn">Month</button>
@@ -136,9 +148,10 @@
     </section>
   </main>
 
-  <footer><span>Made with care for Aqsa</span><span>365-day learning path · v0.3</span></footer>
+  <footer><span>Made with care for Aqsa</span><span>365-day learning path · v0.4</span></footer>
   <script src="lessons.js"></script>
   <script src="year-curriculum.js"></script>
   <script src="app.js"></script>
+  <script src="enhancements.js"></script>
 </body>
 </html>

@@ -12,7 +12,7 @@ const assert=require('node:assert/strict');
  assert.match(await page.locator('#learningDay').innerText(),/Day 1/);
  await page.locator('[data-practice="math"]').click();
  const first=await page.locator('#questionPrompt').innerText();
- for(let i=0;i<10;i++){
+ for(let i=0;i<14;i++){
   const q=await page.evaluate(()=>state.questions[state.index]);
   if(q.choices)await page.getByRole('button',{name:q.a,exact:true}).click();
   else await page.locator('#typedAnswer').fill(q.a);
@@ -34,7 +34,8 @@ const assert=require('node:assert/strict');
  assert.match(await page.locator('#daily-science').innerText(),/Year finale/);
  await page.locator('#learnGrade').selectOption('2');
  await page.locator('[data-practice="science"]').click();
- assert.equal(await page.evaluate(()=>state.questions.length),10);
+ assert.equal(await page.evaluate(()=>state.questions.length),14);
+ await page.evaluate(()=>{state.index=state.questions.findIndex(q=>q.passage);renderQuestion()});
  assert.ok(await page.locator('#questionPassage').isVisible());
  await page.locator('#pencilMode').click();
  assert.ok(await page.locator('#writingCanvas').isVisible());

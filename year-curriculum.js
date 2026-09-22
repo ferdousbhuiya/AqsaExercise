@@ -34,78 +34,6 @@ const YearCurriculum = (() => {
     ['Word problems and reasoning','Decide what is known and what is asked. Draw a model, choose an operation, and check whether the answer makes sense.']
   ];
   const contexts = ['shells','stickers','blocks','buttons','beads','cards','pencils','leaves','marbles','toy cars','flowers','books'];
-  function math(grade,day,variant) {
-    const unit=Math.min(12,Math.floor((day-1)/28)), week=Math.floor(((day-1)%28)/7), angle=(day-1)%7;
-    const r=random(grade*1000003+day*7907+variant*104729), person=names[(day+variant)%names.length];
-    const item=contexts[(day+week+variant)%contexts.length], max=grade===1?[5,10,15,20][week]:[20,40,70,100][week];
-    const qs=[]; const add=(p,a,e,c)=>qs.push(question(p,a,e,c));
-    for(let i=0;i<10;i++) {
-      let a=1+r(max-1), b=1+r(grade===1?9:30), n, answer;
-      const prefix=i===9?'Challenge: ':'';
-      switch(unit) {
-        case 0:
-          n=1+r(max-1);
-          if(i%3===0)add(`${prefix}${person} counts ${n} ${item}, then finds one more. How many now?`,n+1,`One more than ${n} is ${n+1}.`);
-          else if(i%3===1)add(`${prefix}Fill the gap: ${n}, __, ${n+2}.`,n+1,'Count forward one at a time.');
-          else add(`${prefix}Start at ${n+3} on a number line. Move ${grade} steps left. Where do you land?`,n+3-grade,`Moving left subtracts ${grade}.`);
-          break;
-        case 1:
-          n=grade===1?10+r(90):100+r(900);
-          if(i%3===0)add(`${prefix}How many tens are shown by the tens digit in ${n}?`,Math.floor(n/10)%10,'The tens place is the second position from the right.');
-          else if(i%3===1)add(`${prefix}What is the value of the ones digit in ${n}?`,n%10,'The rightmost digit counts ones.');
-          else {const tens=1+r(9),ones=r(10),h=grade===1?0:1+r(9);add(`${prefix}Build the number: ${h?`${h} hundreds, `:''}${tens} tens and ${ones} ones.`,h*100+tens*10+ones,`${h*100} + ${tens*10} + ${ones} = ${h*100+tens*10+ones}.`);}
-          break;
-        case 2:
-          a=grade===1?1+r(Math.max(2,max-1)):10+r(max-10);b=1+r(grade===1?max-a:10+week*5);
-          add(i%2?`${prefix}${person} has ${a} ${item} and gets ${b} more. How many altogether?`:`${prefix}${a} + ${b} = ?`,a+b,`Start at ${a} and add ${b}. The total is ${a+b}.`);break;
-        case 3:
-          a=grade===1?2+r(max-1):10+r(max-9);b=1+r(a);
-          add(i%2?`${prefix}There are ${a} ${item}. ${person} puts away ${b}. How many remain?`:`${prefix}${a} − ${b} = ?`,a-b,`Check: ${a-b} + ${b} = ${a}.`);break;
-        case 4:
-          a=1+r(grade===1?99:999);b=1+r(grade===1?99:999);
-          if(i%2===0)add(`${prefix}Choose the symbol: ${a} __ ${b}`,a>b?'>':a<b?'<':'=',`Compare place values. ${a} is ${a>b?'greater than':a<b?'less than':'equal to'} ${b}.`,['<','>','=']);
-          else add(`${prefix}Which is ${i%4===1?'greatest':'smallest'}: ${a}, ${b}, ${a+b}?`,i%4===1?a+b:Math.min(a,b),'Compare the amounts, starting with the largest place value.',[a,b,a+b]);break;
-        case 5: {
-          const step=grade===1?[2,5,10][(i+week)%3]:[2,3,5,10][(i+week)%4];n=r(10)*step;
-          add(`${prefix}Find the next number: ${n}, ${n+step}, ${n+2*step}, __.`,n+3*step,`Add ${step} each time.`);break;}
-        case 6: {
-          const shape=['triangle','square','rectangle'][i%3],sides=i%3===0?3:4,count=1+r(grade===1?4:8);
-          if(i%2===0)add(`${prefix}Draw ${count} separate ${shape}${count===1?'':'s'}. How many straight sides altogether?`,count*sides,`Each ${shape} has ${sides} straight sides. Count ${count} groups of ${sides}.`);
-          else {const circles=1+r(5);add(`${prefix}${person} draws ${count} ${shape}${count===1?"":"s"} and ${circles} circle${circles===1?"":"s"}. How many corners altogether?`,count*sides,`Each ${shape} has ${sides} corners. Circles add no corners.`);}break;}
-        case 7:
-          a=2+r(grade===1?12:40);b=1+r(a-1);
-          if(i%2===0)add(`${prefix}A ribbon is ${a} cm long. Cut off ${b} cm. How many centimeters remain?`,a-b,`${a} cm − ${b} cm = ${a-b} cm.`);
-          else add(`${prefix}A pencil is ${a} cm and a crayon is ${b} cm long. How many centimeters longer is the pencil?`,a-b,'Subtract the shorter length from the longer length.');break;
-        case 8: {
-          const hour=1+r(12),duration=1+r(grade===1?2:4),end=(hour+duration-1)%12+1;
-          if(i%2===0)add(`${prefix}Reading starts at ${hour}:00 and lasts ${duration} hour${duration===1?'':'s'}. What hour is it at the end? Type 1–12.`,end,`Move the hour hand forward ${duration} hour${duration===1?'':'s'} from ${hour}.`);
-          else {const minute=grade===1?30:5*(1+r(11));add(`${prefix}At ${hour}:${String(minute).padStart(2,'0')}, how many minutes past ${hour} is it?`,minute,'The digits after the colon show minutes past the hour.');}break;}
-        case 9: {
-          const d=1+r(grade===1?3:8),p=r(10),cost=1+r(d*10+p);
-          if(i%2===0)add(`${prefix}${person} has ${d} dimes and ${p} pennies. How many cents is that?`,d*10+p,`${d} × 10 cents + ${p} cents = ${d*10+p} cents.`);
-          else add(`${prefix}A snack costs ${cost} cents. Pay ${d*10+p} cents. How many cents change?`,d*10+p-cost,'Change is the amount paid minus the cost.');break;}
-        case 10: {
-          const groups=grade===1?2:[2,3,4,5][r(4)],each=1+r(grade===1?10:9);
-          if(i%2===0)add(`${prefix}Share ${groups*each} ${item} equally among ${groups} children. How many does each get?`,each,`${groups} equal groups of ${each} make ${groups*each}.`);
-          else add(`${prefix}${groups} bags each contain ${each} ${item}. How many altogether?`,groups*each,`Add ${each} ${groups} times to get ${groups*each}.`);break;}
-        case 11:
-          a=2+r(grade===1?10:30);b=1+r(grade===1?9:20);
-          if(i%2===0)add(`${prefix}Class survey: cats ${a} votes; dogs ${b} votes. How many votes altogether?`,a+b,'Add both categories in the table.');
-          else add(`${prefix}Picture graph: Monday ${a} stars; Tuesday ${b} stars. Each star means ${grade} books. How many books on Tuesday?`,b*grade,`Read the key: ${b} stars × ${grade} books per star.`);break;
-        default: {
-          a=grade===1?5+r(6):20+r(40);b=1+r(grade===1?5:20);const c=1+r(a);
-          add(`${prefix}${person} starts with ${a} ${item}, gets ${b} more, then gives away ${c}. How many remain?`,a+b-c,`First ${a} + ${b} = ${a+b}. Then ${a+b} − ${c} = ${a+b-c}.`);
-        }
-      }
-      // Retry with the next deterministic values, keeping the same skill.
-      if(qs.slice(0,-1).some(q=>q.p===qs[qs.length-1].p)){qs.pop();i--;}
-    }
-    const example=qs[0];
-    return {unit:mathUnits[unit][0],lesson:lesson(`${angles[angle]}: ${mathUnits[unit][0]}`,mathUnits[unit][1]+' '+routines[angle],`${example.p} Answer: ${example.a}. ${example.explanation}`,mathVisual(unit,grade),`Use ${item} or a drawing to explain question 10. Show a second way to check your answer.`),questions:qs};
-  }
-  function mathVisual(unit,grade) {
-    return ['0 → 1 → 2 → 3 → 4 → 5','23 = 20 + 3','● ● ● + ● ● = 5','● ● ● ● ● − ● ● = 3','12 < 21','2 → 4 → 6 → 8','△ 3 sides   □ 4 sides   ○ 0 straight sides','0 | 1 | 2 | 3 | 4 | 5 cm','12 → 1 → 2 → 3 …','dime: 10¢   nickel: 5¢   penny: 1¢','●● | ●● = 2 equal groups','Cats: ●●●   Dogs: ●●','Start → add → take away → check'][unit];
-  }
   const englishUnits = [
     ['Beginning sounds','Listen to the first sound, then match it to a letter. Say the whole word after blending its sounds.'],
     ['Rhymes and word families','Rhyming words share an ending sound. Changing the first sound can make a new word: cat, hat, bat.'],
@@ -240,98 +168,113 @@ const YearCurriculum = (() => {
     ['Evidence and claims','A claim should fit the evidence. More testing may be needed before making a broad conclusion.','saying what three measured trials show','saying every object behaves the same after one trial','supported limited claim','claim beyond the evidence','Describe what was tested. Avoid saying always when evidence is limited.']
   ];
   const scienceThemes=['Living things','Plants','Animals and habitats','Body and senses','States of matter','Materials','Forces and magnets','Light and sound','Weather','Earth and space','Our environment','Working like a scientist','Science projects'];
-  // Project weeks reuse an earlier concept with an explicit new design/evidence task.
-  const projectCases=[
-    ['Design a plant-care plan',scienceCases[7]],['Choose a spill-cleaning material',scienceCases[21]],['Design a toy-car test',scienceCases[25]],['Explain a shadow model',scienceCases[29]]
-  ];
-  function science(grade,day,variant) {
-    const week=Math.min(51,Math.floor((day-1)/7)),angle=(day-1)%7,unit=Math.floor(week/4);
-    const source=week<48?scienceCases[week]:projectCases[week-48][1];
-    const [baseTitle,teach,a,b,ca,cb,reason]=source,title=week<48?baseTitle:projectCases[week-48][0];
-    const person=names[(day+grade+variant)%names.length],r=random(day*3571+grade*97+variant*313);
-    const countA=3+r(grade===1?7:17),countB=1+r(countA-1),trial=1+((day+variant)%4);
-    const report=`Practice observation chart (made-up classroom data): ${person} sorts picture cards. ${countA} cards show ${a}; ${countB} cards show ${b}. Each card represents one example.`;
-    const qs=[];const add=(p,ans,e,choices,extra={})=>qs.push(question(p,ans,e,choices,extra));
-    const conceptTasks=[
-      [
-        [`${person} studies ${a}. Which label fits?`,ca,[cb]],
-        [`Which label fits ${b}?`,cb,[ca]],
-        [`Which example belongs with “${ca}”?`,a,[b]],
-        [`Which example belongs with “${cb}”?`,b,[a]],
-        ['Which explanation matches the two examples?',reason,['All objects behave in exactly the same way.']]
-      ],
-      [
-        [`You make a model of ${a}. Which label should you add?`,ca,[cb]],
-        [`Your second model represents ${b}. Which label belongs on it?`,cb,[ca]],
-        [`A model labeled “${ca}” should represent which example?`,a,[b]],
-        ['Does making a paper model turn the paper into the real thing?','no',['yes']],
-        ['What should your model help explain?',reason,['The model must include every detail in the world.']]
-      ],
-      [
-        [`A friend labels ${a} as “${cb}”. What is the correction?`,ca,[cb]],
-        [`A friend labels ${b} as “${ca}”. What is the correction?`,cb,[ca]],
-        ['Which explanation helps correct the labels?',reason,['Labels never need checking.']],
-        [`Which example would you use to explain “${ca}”?`,a,[b]],
-        ['What should you do if you cannot explain a label?','look again at the example and its properties',['guess and refuse to check']]
-      ],
-      [
-        [`Sort these: ${a}; ${b}. Which goes in the “${ca}” group?`,a,[b]],
-        [`Which goes in the “${cb}” group?`,b,[a]],
-        ['Should the same sorting rule apply to every example?','yes',['no']],
-        ['What difference supports your sorting?',reason,['The first card picked is always right.']],
-        [`You find another picture of ${b}. Which group should it join?`,cb,[ca]]
-      ],
-      [
-        [`Predict the label for a new drawing of ${a}.`,ca,[cb]],
-        [`Predict the label for a new drawing of ${b}.`,cb,[ca]],
-        ['What science idea supports these predictions?',reason,['A prediction cannot use evidence.']],
-        ['If new evidence disagrees with a prediction, what should happen?','recheck and update the prediction',['hide the evidence']],
-        [`A second observer agrees that ${a} fits “${ca}”. What does agreement provide?`,'additional support, not proof about everything',['proof that all future guesses are correct']]
-      ],
-      [
-        [`In an everyday explanation, ${a} is an example of what?`,ca,[cb]],
-        [`Which everyday example helps you explain “${cb}”?`,b,[a]],
-        ['Which explanation would you share with a grown-up?',reason,['Objects change category whenever we rename them.']],
-        ['How should you explore unfamiliar real objects?','observe safely with a grown-up',['taste them to find out']],
-        [`You see ${b} in a book. Which label connects it to today's lesson?`,cb,[ca]]
-      ],
-      [
-        [`Challenge review: ${a} belongs to which category?`,ca,[cb]],
-        [`Challenge review: which example belongs to “${cb}”?`,b,[a]],
-        ['Which sentence best teaches the idea?',reason,['No explanation is needed for science.']],
-        ['What should a strong science explanation include?','a claim supported by observations',['only a confident voice']],
-        ['You still have a question after the lesson. What is a useful next step?','plan a safe observation with a grown-up',['pretend you already know everything']]
-      ]
-    ][angle];
-    for(const [prompt,answer,wrong] of conceptTasks)add(prompt,answer,answer===ca||answer===cb||answer===a||answer===b?reason:`${answer}.`,wrong,{passage:teach});
-    add(`How many picture cards show ${a}?`,countA,'Read the first count in the chart.',null,{passage:report});
-    add('How many picture cards are in the chart altogether?',countA+countB,`Add ${countA} + ${countB} = ${countA+countB}.`,null,{passage:report});
-    add(grade===1?'Which category has more picture cards?':`How many more cards show ${a} than ${b}?`,grade===1?ca:countA-countB,grade===1?`${countA} is greater than ${countB}.`:`Subtract ${countA} − ${countB} = ${countA-countB}.`,grade===1?[ca,cb]:null,{passage:report});
-    const thinking=[
-      ['Which is an observation about the chart?',`There are ${countA} cards showing ${a}.`,'An observation reports what is seen or counted.',['Every example in the world is on this chart.','The chart proves what will happen tomorrow.']],
-      ['What should a model help us show?','the important parts of the idea','A model is a simplified representation, not a perfect copy.',['only our favorite color','every detail in the universe']],
-      ['Which words help connect evidence to an explanation?','I know because','Because connects a statement to its supporting reason.',['It must be magic','No evidence is needed']],
-      ['What rule should we use to sort the cards?',`the difference between ${ca} and ${cb}`,'Use the property being studied as the sorting rule.',['the color of the table','which card we picked up first']],
-      ['What should we do if an observation disagrees with our prediction?','check the evidence and revise the prediction','Predictions can change when new evidence is found.',['hide the observation','change the count to fit the guess']],
-      ['What should we do before trying a new hands-on activity?','ask a grown-up to help choose safe materials','A grown-up can help choose a safe way to investigate.',['taste unknown materials','look directly at the Sun']],
-      ['What makes an explanation stronger?','evidence from careful observations','Evidence supports an explanation.',['saying it louder','ignoring results that surprise us']]
-    ][angle];
-    add(thinking[0],thinking[1],thinking[2],thinking[3]);
-    add(`Challenge: In a second picture sort, ${person} adds ${trial} cards showing ${b}. How many cards now show ${b}?`,countB+trial,`The original ${countB} cards plus ${trial} new cards make ${countB+trial}.`,null,{passage:report});
-    const activity=[`Draw ${a} and ${b}. Label each with its science category.`,`Make a paper model of ${a}. Explain what your model shows and what it leaves out.`,`Explain why ${a} and ${b} have different labels. Use “because”.`,`Make two sorting groups for ${ca} and ${cb}. Add a new example with a grown-up.`,`Predict how you would label a new example. Ask a grown-up to help check your reason.`,`Find a safe everyday example related to ${title.toLowerCase()}. Sketch it without touching unknown materials.`,`Teach a grown-up today's idea. Give an example, an explanation and one question you still have.`][angle];
-    return {unit:scienceThemes[unit],lesson:lesson(`${angles[angle]}: ${title}`,teach+' '+routines[angle],`${a}: ${ca}. ${b}: ${cb}. ${reason}`,`${a} → ${ca}\n${b} → ${cb}`,activity),questions:qs};
+  const mathSkills=['Addition','Subtraction','Multiplication','Division','Word problem','Number line','Number words','Place value','Compare','Patterns','Shapes','Measurement','Time','Money','Fractions','Data','Missing number','Odd and even'];
+  function mix(items,r){const out=[...items];for(let i=out.length-1;i>0;i--){const j=r(i+1);[out[i],out[j]]=[out[j],out[i]];}return out;}
+  function words(n){const small=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];if(n<20)return small[n];if(n<100)return ['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'][Math.floor(n/10)]+(n%10?' '+small[n%10]:'');return small[Math.floor(n/100)]+' hundred'+(n%100?' '+words(n%100):'');}
+  function mixedMath(grade,day,variant){
+    const r=random(day*7193+variant*8171+grade*1021),stage=Math.floor((day-1)/92),core=mathSkills.slice(0,7);
+    const extras=mix(mathSkills.slice(7),random(day*29+variant*43+grade)).slice(0,3);
+    const skills=mix([...core,...extras,...mix(core,r).slice(0,4)],r),qs=[];
+    const person=names[(day+variant)%names.length],item=contexts[(day+variant*3)%contexts.length];
+    for(const skill of skills){
+      let q,attempt=0;
+      do{
+        const a=grade===1?12+r(38+stage*12):100+r(200+stage*100),b=grade===1?10+r(30):30+r(100+stage*50);
+        const n=2+r(grade===1?4:8),k=2+r(grade===1?4:8),mode=r(3);let x;
+        const make=(p,ans,e,choices,extra)=>question(p,ans,e,choices,{skill,...extra});
+        switch(skill){
+          case 'Addition':q=make(mode===0?`Add ${a} and ${b}.`:`${a} + ${b} = ?`,a+b,`Add ones, then tens${grade===2?', then hundreds':''}. Regroup if a column reaches ten. ${a} + ${b} = ${a+b}.`,null,{visual:{kind:'column',a,b,op:'+'}});break;
+          case 'Subtraction':q=make(`${a+b} − ${b} = ?`,a,`Subtract by place value. Check: ${a} + ${b} = ${a+b}.`,null,{visual:{kind:'column',a:a+b,b,op:'−'}});break;
+          case 'Multiplication':q=make(mode===0?`${n} × ${k} = ?`:`Count ${n} equal groups of ${k}. How many altogether?`,n*k,`${n} groups of ${k} give ${n*k}.`,null,{visual:{kind:'array',rows:n,cols:k}});break;
+          case 'Division':q=make(mode===0?`${n*k} ÷ ${n} = ?`:`Share ${n*k} counters equally into ${n} groups. How many in each?`,k,`${n} × ${k} = ${n*k}, so ${n*k} ÷ ${n} = ${k}.`);break;
+          case 'Word problem':x=1+r(n*k);q=mode===0?make(`${person} has ${n*k} ${item}, gets ${n} more, then gives away ${x}. How many remain?`,n*k+n-x,`First add ${n}. Then subtract ${x}.`):mode===1?make(`${person} packs ${n} bags with ${k} ${item} in each. How many ${item} are packed?`,n*k,`There are ${n} equal groups of ${k}.`):make(`${person} shares ${n*k} ${item} equally among ${k} friends. How many does each friend get?`,n,`Split the total into ${k} equal groups.`);break;
+          case 'Number line':{const from=3+r(8),step=1+r(4),delta=mode===0?-Math.min(step,from):step; q=make(`Start at ${from}. Move ${Math.abs(delta)} steps ${delta>0?'right':'left'} on the number line. Where do you land?`,from+delta,`Moving ${delta>0?'right adds':'left subtracts'} ${Math.abs(delta)}.`,null,{visual:{kind:'line',from,delta,min:0,max:16}});break;}
+          case 'Number words':x=grade===1?10+r(90):100+r(900);q=make(`Write ${x} in words.`,words(x),`Read each place: ${words(x)}.`,null,{aliases:[words(x).replace('hundred ','hundred and ')]});break;
+          case 'Place value':x=grade===1?10+r(90):100+r(900);q=make(`What is the value of the tens digit in ${x}?`,Math.floor(x/10)%10*10,'The tens digit represents that many groups of ten.');break;
+          case 'Compare':q=make(`Which symbol fits? ${a} __ ${b}`,a>b?'>':a<b?'<':'=',`Compare the largest place values first.`,['<','>','=']);break;
+          case 'Patterns':x=1+r(12);q=make(`Continue: ${x}, ${x+n}, ${x+2*n}, __.`,x+3*n,`Add ${n} at every step.`);break;
+          case 'Shapes':{const shape=['triangle','square','rectangle','pentagon'][r(4)],sides={triangle:3,square:4,rectangle:4,pentagon:5}[shape];q=make(`How many sides does a ${shape} have?`,sides,`A ${shape} has ${sides} straight sides.`,[3,4,5,6],{visual:{kind:'shape',shape}});break;}
+          case 'Measurement':q=make(`A ribbon is ${a} cm long. Another is ${b} cm long. What is their total length in centimeters?`,a+b,`Both lengths use centimeters, so add ${a} + ${b}.`);break;
+          case 'Time':{const h=1+r(12),m=[0,30,15,45][r(grade===1?2:4)];q=make(`Read the clock. Type the time as h:mm.`,`${h}:${String(m).padStart(2,'0')}`,`The short hand shows the hour; the long hand shows ${m} minutes.`,null,{visual:{kind:'clock',hour:h,minute:m}});break;}
+          case 'Money':x=r(10);q=make(`You have ${n} dimes and ${x} pennies. How many cents altogether?`,n*10+x,`Each dime is 10 cents; each penny is 1 cent. ${n} × 10 + ${x} = ${n*10+x}.`);break;
+          case 'Fractions':{const total=[2,3,4][r(3)],filled=1+r(total-1);q=make('What fraction of the bar is shaded? Type shaded parts / total parts.',`${filled}/${total}`,`${filled} of ${total} equal parts are shaded.`,null,{visual:{kind:'fraction',total,filled},aliases:[`${filled} / ${total}`]});break;}
+          case 'Data':q=make(`Read the chart. How many more votes did cats get than dogs?`,k,`Subtract ${n} from ${n+k}.`,null,{visual:{kind:'bars',labels:['Cats','Dogs'],values:[n+k,n]}});break;
+          case 'Missing number':q=make(`Find the missing number: __ + ${k} = ${n+k}.`,n,`Subtract ${k} from ${n+k}.`);break;
+          default:q=make(`Is ${a} odd or even?`,a%2?'odd':'even','Even numbers can be split into two equal whole-number groups.',['odd','even']);
+        }
+      }while(qs.some(old=>old.p===q.p)&&++attempt<100);
+      if(attempt===100)throw Error('Could not construct distinct math questions');qs.push(q);
+    }
+    const focus=core[(day-1)%core.length],sample=qs.find(q=>q.skill===focus);
+    return {unit:'Mixed math adventure',lesson:lesson(`Today's focus: ${focus}`,`Practice ${[...new Set(skills)].join(', ').toLowerCase()}. Work in small steps, and use drawings or objects when you need them.`,`${sample.p} Answer: ${sample.a}. ${sample.explanation}`,'Think → Model → Solve → Check',`Choose a ${focus.toLowerCase()} problem and explain a second way to solve it.`),questions:qs};
   }
+  function mixedEnglish(grade,day,variant){
+    const r=random(day*1531+variant*1931+grade*73),base=english(grade,day,variant),passage=base.questions[0].passage;
+    const v=vocab[(day+variant)%vocab.length],w=vocab[(day+variant+5)%vocab.length],person=names[(day+variant)%names.length];
+    const qs=base.questions.slice(0,3).map((q,i)=>({...q,skill:['Reading: who','Reading: why','Story sequence'][i]}));
+    const add=(skill,p,a,e,c,extra)=>qs.push(question(p,a,e,c,{skill,...extra}));
+    add('Spelling',`Spell the word meaning ${['the star that lights our day','a small pet that says meow','a place with plants','something you read','water falling from clouds'][day%5]}.`,['sun','cat','garden','book','rain'][day%5],'Say the word slowly, then check each sound.');
+    add('Nouns',`Find the noun: “The ${v[0]} can move.”`,v[0],'A noun names a person, place, animal or thing.',[v[0],'can','move']);
+    const verb=['jump','paint','read','sing','swim','draw','dance'][(day+variant)%7];
+    add('Verbs',`Find the action: “We ${verb} near the ${v[0]}.”`,verb,'A verb tells what someone does.',[verb,'we',v[0]]);
+    const adjective=['small','friendly','bright','clean','happy','tiny','quick','loud','long','soft','early','busy'][(day+variant)%vocab.length];
+    add('Adjectives',`Find the describing word: “the ${adjective} ${v[0]}”.`,adjective,'An adjective describes a noun.',[adjective,v[0],'the']);
+    add('Opposites',`Write the opposite of “${w[4]}”.`,w[5],`${w[4]} and ${w[5]} have opposite meanings.`);
+    add('Punctuation',`Choose the correctly written statement about ${person}.`,`${person} likes books.`,'A statement starts with a capital letter and ends with a period.',[`${person} likes books.`,`${person.toLowerCase()} likes books.`,`${person} likes books?`]);
+    const rotations=[
+      ()=>add('Rhymes',`Which word rhymes with “${v[0]}”?`,v[1],'Listen for the same ending sound.',[v[1],w[0],'desk']),
+      ()=>add('Plurals',`One ${v[0]}, two ___.`,v[3],'A plural means more than one.',[v[3],v[0],v[0]+'ing']),
+      ()=>{const pair=[['walk','walked'],['go','went'],['eat','ate'],['see','saw'],['make','made']][day%5];add('Past tense',`Today I ${pair[0]}. Yesterday I ___.`,pair[1],'The past tense tells about before now.',[pair[1],pair[0],pair[0]+'ing']);},
+      ()=>add('Pronouns',`${person} and I are friends. ___ play together.`, 'We','We includes the speaker and another person.',['We','They','It']),
+      ()=>{const pair=[['rain','coat'],['sun','flower'],['tooth','brush'],['foot','ball'],['book','mark']][day%5];add('Compound words',`Join ${pair[0]} + ${pair[1]}.`,pair.join(''),'Join the two complete words to make one word.');},
+      ()=>add('Beginning sounds',`Which letter starts “${w[0]}”?`,w[2],'Listen to the beginning sound.',[w[2],'z','q']),
+      ()=>{const z=[['tiny','small'],['glad','happy'],['fast','quick'],['begin','start'],['large','big']][day%5];add('Similar meanings',`Which word means almost the same as “${z[0]}”?`,z[1],'Synonyms have similar meanings.',[z[1],'empty','round']);},
+      ()=>{const z=[['ship','sh'],['chair','ch'],['thin','th']][day%3];add('Letter teams',`Which two letters work together at the beginning of “${z[0]}”?`,z[1],'A digraph uses two letters for one sound.',[z[1],'br','st']);}
+    ];
+    mix(rotations,r).slice(0,5).forEach(f=>f());
+    if(grade===2){const q=qs.find(q=>q.skill==='Nouns');q.p=`Which word is a proper noun?`;q.a=person;q.choices=[person,v[0],'school'];q.explanation='A proper noun names a particular person or place and begins with a capital.';}
+    return {unit:'Mixed English adventure',lesson:lesson('Read, write and play with words',`Today's mix: ${qs.map(q=>q.skill).join(', ')}. Read the short story first. Find evidence in its sentences, then practice words and grammar.`,passage,`${v[0]} → ${v[1]}\nFirst → Next → Finally`,`Write or tell a new two-sentence ending. Include an action word and a describing word.`),questions:mix(qs,r)};
+  }
+  function mixedScience(grade,day,variant){
+    const r=random(day*2777+variant*997+grade*83),indices=mix(Array.from({length:48},(_,i)=>i),r).slice(0,6),qs=[];
+    const add=(skill,p,a,e,c,extra)=>qs.push(question(p,a,e,c,{skill,...extra}));
+    indices.forEach((index,i)=>{
+      const [title,teach,a,b,ca,cb,reason]=scienceCases[index],skill=title;
+      if(i===0)add(skill,`Sort this example: ${a}. Which label fits?`,ca,reason,[ca,cb]);
+      else if(i===1)add(skill,`A learner labels ${b} as “${ca}”. Is the label correct?`,'no',`${b} fits “${cb}”. ${reason}`,['yes','no']);
+      else if(i===2)add(skill,`Complete: ${a} is an example of ___.`,ca,reason,[ca,cb]);
+      else if(i===3)add(skill,`Which statement explains the difference between ${a} and ${b}?`,reason,reason,[reason,`Both examples must be ${ca}.`,`Both examples must be ${cb}.`]);
+      else if(i===4)add(skill,`You need an example of “${cb}”. Which would you choose?`,b,reason,[a,b]);
+      else add(skill,`Which pair is correctly matched?`,`${a} → ${ca}`,reason,[`${a} → ${ca}`,`${a} → ${cb}`,`${b} → ${ca}`]);
+    });
+    const season=[['a puddle warms and slowly dries','evaporation','freezing'],['water gets cold enough to become ice','freezing','melting'],['ice becomes liquid as it warms','melting','condensation'],['drops form outside a cold glass','condensation','evaporation']][day%4];
+    add('Predict a change',`What process happens when ${season[0]}?`,season[1],'Changes in thermal energy can change the state of water.',[season[1],season[2]]);
+    const tool=[['temperature','thermometer','ruler'],['length','ruler','rain gauge'],['rainfall','rain gauge','thermometer'],['mass','balance','ruler']][(day+variant)%4];
+    add('Choose a tool',`Which tool would you use to measure ${tool[0]}?`,tool[1],`A ${tool[1]} measures ${tool[0]}.`,[tool[1],tool[2]]);
+    const height=3+r(9),later=height+1+r(6);
+    add('Read evidence',`Plant A was ${height} cm tall on Monday and ${later} cm on Friday. Which claim fits the measurements?`,'It grew taller.','The later measurement is larger.',['It grew taller.','It got shorter.','It stayed the same height.']);
+    add('Measure change',`How many centimeters did Plant A grow?`,later-height,`Subtract ${height} from ${later}.`,null,{passage:`Monday: ${height} cm. Friday: ${later} cm.`,visual:{kind:'bars',labels:['Monday','Friday'],values:[height,later]}});
+    const test=[['ramp height','the same toy car'],['amount of water','the same kind of plant'],['surface texture','the same sliding block'],['paper thickness','the same bridge span']][(day+variant)%4];
+    add('Fair tests',`To test ${test[0]}, what should stay the same?`,test[1],'Change one factor and keep other relevant conditions the same.',[test[1],'change everything at once']);
+    add('Observation or guess',`“Plant A is ${later} cm tall.” Is this a measurement or a guess about tomorrow?`,'measurement','A ruler reading records an observation.',['measurement','guess about tomorrow']);
+    const safe=[['a bright Sun','observe shadows instead of looking at the Sun','look directly at the Sun'],['an unknown liquid','ask a grown-up before handling it','taste it'],['a wild animal','watch from a distance','try to grab it'],['a hot object','ask a grown-up for help','touch it to check']][day%4];
+    add('Safe investigation',`You want to learn about ${safe[0]}. What should you do?`,safe[1],'Choose a safe way to observe.',[safe[1],safe[2]]);
+    add('Reason from results',`A toy rolls ${height} cm in one test and ${later} cm in another. What should you do before saying how far it usually rolls?`,'repeat the test under the same conditions','Repeated tests give more evidence.',['repeat the test under the same conditions','say it always rolls exactly '+later+' cm']);
+    const focus=scienceCases[indices[0]];
+    return {unit:'Mixed science adventure',lesson:lesson(`Explore today: ${focus[0]}`,focus[1],`${focus[2]}: ${focus[4]}. ${focus[3]}: ${focus[5]}. ${focus[6]}`,`${focus[2]} → ${focus[4]}\n${focus[3]} → ${focus[5]}`,`Draw an example of ${focus[0].toLowerCase()}. Explain it, then tell a grown-up one observation you could safely make.`),questions:mix(qs,r),learningNotes:indices.slice(1).map(i=>({title:scienceCases[i][0],text:scienceCases[i][1],example:scienceCases[i][6]}))};
+  }
+
   function build(grade,subject,day,variant=0) {
     if(![1,2].includes(Number(grade))||!['math','english','science'].includes(subject)||!Number.isInteger(day)||day<1||day>days||!Number.isInteger(variant)||variant<0)throw new RangeError('Invalid curriculum request');
     grade=Number(grade);
-    const pack=({math,english,science})[subject](grade,day,variant);
+    const pack=({math:mixedMath,english:mixedEnglish,science:mixedScience})[subject](grade,day,variant);
     const r=random(day*1237+grade*71+variant*1471+subject.length);
     if(day===365){pack.lesson.title='Year finale: '+pack.unit;pack.lesson.challenge='Choose one example from this year. Show what you know in a drawing, explanation or mini-project. '+pack.lesson.challenge;}
-    pack.questions.forEach((q,i)=>{q.id=`year1-g${grade}-${subject}-d${day}-v${variant}-q${i+1}`;q.challenge=i===9;if(q.choices)for(let j=q.choices.length-1;j>0;j--){const k=r(j+1);[q.choices[j],q.choices[k]]=[q.choices[k],q.choices[j]];}});
+    pack.questions.forEach((q,i)=>{q.id=`mixed-v2-g${grade}-${subject}-d${day}-v${variant}-q${i+1}`;q.challenge=i===pack.questions.length-1;if(q.choices)for(let j=q.choices.length-1;j>0;j--){const k=r(j+1);[q.choices[j],q.choices[k]]=[q.choices[k],q.choices[j]];}});
     return {...pack,grade,subject,day,variant,week:Math.min(52,Math.ceil(day/7)),focus:angles[(day-1)%7]};
   }
   function dateNumber(value) {const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(value||'');if(!m)return NaN;const n=Date.UTC(+m[1],+m[2]-1,+m[3]);const d=new Date(n);return d.getUTCFullYear()===+m[1]&&d.getUTCMonth()===+m[2]-1&&d.getUTCDate()===+m[3]?n/86400000:NaN;}
   function dayForDate(start,current) {const a=dateNumber(start),b=dateNumber(current);return Number.isFinite(a)&&Number.isFinite(b)?Math.max(1,Math.min(days,b-a+1)):1;}
-  return {days,build,dayForDate,dateNumber,topics:{math:mathUnits.map(u=>u[0]),english:englishUnits.map(u=>u[0]),science:scienceThemes}};
+  return {days,build,dayForDate,dateNumber,words,scienceCases,mathSkills,topics:{math:mathUnits.map(u=>u[0]),english:englishUnits.map(u=>u[0]),science:scienceThemes}};
 })();
 if(typeof module!=='undefined')module.exports=YearCurriculum;

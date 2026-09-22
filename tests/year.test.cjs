@@ -2,19 +2,22 @@ const assert=require('node:assert/strict');
 const Y=require('../year-curriculum.js');
 let questionCount=0;
 for(const grade of [1,2])for(const subject of ['math','english','science']) {
-  const dailySets=new Set();
+  const dailySets=new Set();let previousMix="";
   for(let day=1;day<=365;day++) {
     const pack=Y.build(grade,subject,day);
     assert.deepEqual(pack,Y.build(grade,subject,day),'Stable after reload');
-    assert.equal(pack.questions.length,10);
-    assert.equal(new Set(pack.questions.map(q=>q.p)).size,10,'No duplicates within a sheet');
+    assert.equal(pack.questions.length,14);
+    const skills=pack.questions.map(q=>q.skill);assert.ok(new Set(skills).size>=10,`Not enough variety: ${grade} ${subject} ${day}`);
+    if(subject==='math'){for(const core of Y.mathSkills.slice(0,7))assert.ok(skills.includes(core));for(const skill of new Set(skills))assert.ok(skills.filter(s=>s===skill).length<=2);}
+    const mix=skills.join('|');assert.notEqual(mix,previousMix,'Adjacent days must vary their ordering and mix');previousMix=mix;
+    assert.equal(new Set(pack.questions.map(q=>q.p)).size,14,'No duplicates within a sheet');
     assert.ok(pack.lesson.text&&pack.lesson.example&&pack.lesson.challenge&&pack.lesson.visual);
     const key=JSON.stringify(pack.questions.map(q=>[q.p,q.a,q.passage]));
     assert.ok(!dailySets.has(key),`Repeated daily set: ${grade} ${subject} ${day}`);dailySets.add(key);
     for(const variant of [0,1,2]) {
       const set=Y.build(grade,subject,day,variant);
-      assert.equal(set.questions.length,10);
-      assert.equal(new Set(set.questions.map(q=>q.p)).size,10);
+      assert.equal(set.questions.length,14);
+      assert.equal(new Set(set.questions.map(q=>q.p)).size,14);
       for(const q of set.questions) {
         questionCount++;
         assert.ok(q.id&&q.p&&q.a!==''&&q.explanation);
@@ -29,13 +32,13 @@ for(const grade of [1,2])for(const subject of ['math','english','science']) {
           if(sharing)assert.equal(+q.a,sharing[1]/sharing[2]);
           const coins=q.p.match(/has (\d+) dimes and (\d+) pennies/);
           if(coins)assert.equal(+q.a,coins[1]*10+ +coins[2]);
-          assert.ok(Number.isFinite(+q.a)||['<','>','='].includes(q.a));
+          assert.ok(Number.isFinite(+q.a)||['<','>','='].includes(q.a)||['Number words','Time','Fractions','Odd and even'].includes(q.skill));
           if(Number.isFinite(+q.a))assert.ok(+q.a>=0);
         }
       }
       if(variant)assert.notEqual(JSON.stringify(set.questions.map(q=>[q.p,q.a,q.passage])),key,'Bonus must differ from daily set');
     }
-    assert.ok(pack.questions[9].challenge);
+    assert.ok(pack.questions[13].challenge);
   }
   console.log(`Grade ${grade} ${subject}: 365 distinct daily sheets, stable answers, lessons and bonuses`);
 }
