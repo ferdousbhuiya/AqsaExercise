@@ -88,7 +88,8 @@ begin
   from jsonb_to_recordset(coalesce(p_records,'[]'::jsonb)) as x(id text,date date,timestamp bigint,grade smallint,subject text,revision text,path_day smallint,path_start date,variant integer,unit text,score smallint,correct smallint,total smallint)
   where x.id is not null and char_length(x.id)>=8 and x.grade in (1,2) and x.subject in ('math','english','science') and x.score between 0 and 100 and x.total between 1 and 100 and x.correct between 0 and x.total
   on conflict (profile_id,activity_timestamp,grade,subject) do update set score=excluded.score,correct=excluded.correct,total=excluded.total,revision=excluded.revision,path_day=excluded.path_day,path_start=excluded.path_start,variant=excluded.variant,unit=excluded.unit;
-  select coalesce(jsonb_agg(jsonb_build_object('id',score_id,'activity_date',activity_date,'activity_timestamp',activity_timestamp,'grade',grade,'subject',subject,'revision',revision,'path_day',path_day,'path_start',path_start,'variant',variant,'unit',unit,'score',score,'correct',correct,'total',total) order by activity_timestamp),'[]'::jsonb) into v_records from public.learning_scores where profile_id=v_profile_id;
+  select jsonb_agg(jsonb_build_object('id',score_id,'activity_date',activity_date,'activity_timestamp',activity_timestamp,'grade',grade,'subject',subject,'revision',revision,'path_day',path_day,'path_start',path_start,'variant',variant,'unit',unit,'score',score,'correct',correct,'total',total) order by activity_timestamp) into v_records from public.learning_scores where profile_id=v_profile_id;
+  v_records := coalesce(v_records, '[]'::jsonb);
   return jsonb_build_object('ok',true,'records',v_records);
 exception when others then return jsonb_build_object('ok',false,'error','The cloud rejected an invalid score record.');
 end $$;
