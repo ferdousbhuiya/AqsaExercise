@@ -3,7 +3,7 @@
 create extension if not exists pgcrypto;
 
 create table if not exists public.learning_profiles (
-  id uuid primary key default gen_random_uuid(),
+  id uuid primary key default extensions.gen_random_uuid(),
   username text not null unique check (username ~ '^[a-z0-9][a-z0-9._-]{2,29}$'),
   display_name text not null default 'Aqsa' check (char_length(display_name) between 1 and 40),
   pin_hash text not null,
@@ -47,30 +47,30 @@ revoke all on public.learning_profiles, public.learning_sessions, public.learnin
 
 create or replace function public.create_learning_profile(p_username text, p_pin text, p_display_name text default 'Aqsa')
 returns jsonb language plpgsql security definer set search_path = public as $$
-declare v_username text := lower(trim(p_username)); v_profile public.learning_profiles; v_token uuid := gen_random_uuid();
+declare v_username text := lower(trim(p_username)); v_profile public.learning_profiles; v_token uuid := extensions.gen_random_uuid();
 begin
   if v_username !~ '^[a-z0-9][a-z0-9._-]{2,29}$' then return jsonb_build_object('ok',false,'error','Invalid username.'); end if;
   if p_pin !~ '^[0-9]{6,12}$' then return jsonb_build_object('ok',false,'error','PIN must contain 6–12 digits.'); end if;
   if exists(select 1 from public.learning_profiles where username=v_username) then return jsonb_build_object('ok',false,'error','That username is already in use. Sign in or choose another.'); end if;
-  insert into public.learning_profiles(username,display_name,pin_hash) values(v_username,left(coalesce(nullif(trim(p_display_name),''),'Aqsa'),40),crypt(p_pin,gen_salt('bf',10))) returning * into v_profile;
-  insert into public.learning_sessions(token_hash,profile_id) values(encode(digest(v_token::text,'sha256'),'hex'),v_profile.id);
+  insert into public.learning_profiles(username,display_name,pin_hash) values(v_username,left(coalesce(nullif(trim(p_display_name),''),'Aqsa'),40),extensions.crypt(p_pin,extensions.gen_salt('bf',10))) returning * into v_profile;
+  insert into public.learning_sessions(token_hash,profile_id) values(encode(extensions.digest(v_token::text,'sha256'),'hex'),v_profile.id);
   return jsonb_build_object('ok',true,'token',v_token,'username',v_profile.username,'display_name',v_profile.display_name);
 end $$;
 
 create or replace function public.login_learning_profile(p_username text, p_pin text, p_display_name text default null)
 returns jsonb language plpgsql security definer set search_path = public as $$
-declare v_profile public.learning_profiles; v_token uuid := gen_random_uuid();
+declare v_profile public.learning_profiles; v_token uuid := extensions.gen_random_uuid();
 begin
   select * into v_profile from public.learning_profiles where username=lower(trim(p_username)) for update;
   if not found then return jsonb_build_object('ok',false,'error','Incorrect username or PIN.'); end if;
   if v_profile.locked_until is not null and v_profile.locked_until > now() then return jsonb_build_object('ok',false,'error','Too many attempts. Try again in a few minutes.'); end if;
-  if crypt(p_pin,v_profile.pin_hash) <> v_profile.pin_hash then
+  if extensions.crypt(p_pin,v_profile.pin_hash) <> v_profile.pin_hash then
     update public.learning_profiles set failed_attempts=failed_attempts+1,locked_until=case when failed_attempts+1>=5 then now()+interval '5 minutes' else null end where id=v_profile.id;
     return jsonb_build_object('ok',false,'error','Incorrect username or PIN.');
   end if;
   update public.learning_profiles set failed_attempts=0,locked_until=null where id=v_profile.id;
   delete from public.learning_sessions where expires_at < now();
-  insert into public.learning_sessions(token_hash,profile_id) values(encode(digest(v_token::text,'sha256'),'hex'),v_profile.id);
+  insert into public.learning_sessions(token_hash,profile_id) values(encode(extensions.digest(v_token::text,'sha256'),'hex'),v_profile.id);
   return jsonb_build_object('ok',true,'token',v_token,'username',v_profile.username,'display_name',v_profile.display_name);
 end $$;
 
@@ -78,9 +78,9 @@ create or replace function public.sync_learning_scores(p_token text, p_records j
 returns jsonb language plpgsql security definer set search_path = public as $$
 declare v_profile_id uuid; v_records jsonb;
 begin
-  select profile_id into v_profile_id from public.learning_sessions where token_hash=encode(digest(p_token,'sha256'),'hex') and expires_at>now() for update;
+  select profile_id into v_profile_id from public.learning_sessions where token_hash=encode(extensions.digest(p_token,'sha256'),'hex') and expires_at>now() for update;
   if not found then return jsonb_build_object('ok',false,'session_expired',true,'error','Your cloud session expired. Please sign in again.'); end if;
-  update public.learning_sessions set last_used_at=now(),expires_at=now()+interval '90 days' where token_hash=encode(digest(p_token,'sha256'),'hex');
+  update public.learning_sessions set last_used_at=now(),expires_at=now()+interval '90 days' where token_hash=encode(extensions.digest(p_token,'sha256'),'hex');
   if jsonb_typeof(coalesce(p_records,'[]'::jsonb)) <> 'array' or jsonb_array_length(coalesce(p_records,'[]'::jsonb)) > 5000 then return jsonb_build_object('ok',false,'error','Invalid score list.'); end if;
   insert into public.learning_scores(profile_id,score_id,activity_date,activity_timestamp,grade,subject,revision,path_day,path_start,variant,unit,score,correct,total)
   select v_profile_id,left(x.id,100),x.date,x.timestamp,x.grade,x.subject,left(coalesce(x.revision,'legacy'),40),x.path_day,x.path_start,coalesce(x.variant,0),left(coalesce(x.unit,''),120),x.score,x.correct,x.total
