@@ -14,7 +14,7 @@
       <span>Aqsa's Learning Garden</span>
     </button>
     <nav aria-label="Main navigation">
-      <button data-page="home" class="nav-btn active">Today</button>
+      <button data-page="home" class="nav-btn active">Exercises</button>
       <button data-page="learn" class="nav-btn">Learn</button>
       <button data-page="progress" class="nav-btn">Grown-up View</button>
     </nav>
@@ -26,7 +26,7 @@
         <div>
           <p class="eyebrow">TODAY'S ADVENTURE</p>
           <h1>Ready to grow your brain, Aqsa?</h1>
-          <p>Complete one friendly activity in Math, English, and Science.</p>
+          <p>Learn something new, then answer 10 questions in each subject every day.</p>
           <div class="streak"><span>⭐</span><strong id="streakCount">0 day streak</strong></div>
         </div>
         <div class="hero-art" aria-hidden="true">🌱<span>📚</span></div>
@@ -52,7 +52,7 @@
             <p id="exerciseSubject" class="eyebrow">MATH</p>
             <h1 id="exerciseTitle">Daily practice</h1>
           </div>
-          <div class="progress-pill"><span id="questionPosition">1 of 5</span></div>
+          <div class="progress-pill"><span id="questionPosition">1 of 10</span></div>
         </div>
         <div class="question-progress"><span id="questionBar"></span></div>
         <article class="question-card">
@@ -95,14 +95,15 @@
         <div id="resultScore" class="big-score">0%</div>
         <p id="resultMessage"></p>
         <div class="result-actions">
-          <button id="anotherExercise" class="primary-btn">Upgrade to another exercise</button>
+          <button id="anotherExercise" class="primary-btn">Try another 10 questions</button>
           <button id="resultHome" class="secondary-btn">Back to today</button>
         </div>
       </div>
     </section>
 
     <section id="learnPage" class="page">
-      <div class="page-title"><p class="eyebrow">LEARNING PATH</p><h1>Skills that grow with Aqsa</h1><p>The test version starts with Grades 1 and 2. Later levels can be added without changing the app design.</p></div>
+      <div class="page-title"><p class="eyebrow">LEARNING PATH</p><h1>Skills that grow with Aqsa</h1><p>Open a lesson, explore its pictures, and listen or read. Try the small check, then start your exercise.</p></div>
+      <label class="learn-level">Learning level<select id="learnGrade"><option value="1">Grade 1</option><option value="2">Grade 2</option></select></label>
       <div id="curriculumGrid" class="curriculum-grid"></div>
     </section>
 
@@ -125,7 +126,8 @@
     </section>
   </main>
 
-  <footer><span>Made with care for Aqsa</span><span>Test version 0.1</span></footer>
+  <footer><span>Made with care for Aqsa</span><span>Test version 0.2</span></footer>
+  <script src="lessons.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
