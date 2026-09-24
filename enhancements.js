@@ -25,7 +25,7 @@ function renderPreview(){
  const subjects=review.subject==='all'?Object.keys(SUBJECTS):[review.subject];
  $('previewSets').innerHTML=subjects.map(subject=>{
   const pack=YearCurriculum.build(review.grade,subject,review.day);
-  return `<article class="preview-subject"><h2>${SUBJECTS[subject].icon} Day ${review.day} · Grade ${review.grade} · ${SUBJECTS[subject].label}</h2><p>${[...new Set(pack.questions.map(q=>q.skill))].map(escapeHtml).join(' · ')}</p><button class="primary-btn" data-preview-practice="${subject}">Practice this exact set</button><ol class="preview-questions">${pack.questions.map(q=>`<li><span class="skill-tag">${escapeHtml(q.skill)}</span>${q.passage?`<p class="reading-passage">${escapeHtml(q.passage)}</p>`:''}<p>${escapeHtml(q.p)}</p>${questionVisual(q)}${q.choices?`<p class="preview-choices">Options: ${q.choices.map(escapeHtml).join(' / ')}</p>`:''}<details class="answer-detail" ${review.answers?'open':''}><summary>Answer and explanation</summary><p><strong>${escapeHtml(q.a)}</strong> · ${escapeHtml(q.explanation)}</p></details></li>`).join('')}</ol></article>`;
+  return `<article class="preview-subject"><h2>${SUBJECTS[subject].icon} Day ${review.day} · ${escapeHtml(levelLabel(review.grade))} · ${SUBJECTS[subject].label}</h2><p>${[...new Set(pack.questions.map(q=>q.skill))].map(escapeHtml).join(' · ')}</p><button class="primary-btn" data-preview-practice="${subject}">Practice this exact set</button><ol class="preview-questions">${pack.questions.map(q=>`<li><span class="skill-tag">${escapeHtml(q.skill)}</span>${q.passage?`<p class="reading-passage">${escapeHtml(q.passage)}</p>`:''}<p>${escapeHtml(q.p)}</p>${questionVisual(q)}${q.choices?`<p class="preview-choices">Options: ${q.choices.map(escapeHtml).join(' / ')}</p>`:''}<details class="answer-detail" ${review.answers?'open':''}><summary>Answer and explanation</summary><p><strong>${escapeHtml(q.a)}</strong> · ${escapeHtml(q.explanation)}</p></details></li>`).join('')}</ol></article>`;
  }).join('');
  $('previewPrev').disabled=review.day===1;$('previewNext').disabled=review.day===365;
  $('previewAnswers').textContent=review.answers?'Hide all answers':'Show all answers';
@@ -69,7 +69,16 @@ if('speechSynthesis' in window)speechSynthesis.addEventListener('voiceschanged',
 loadVoices();
 
 const game={kind:'frog',round:0,stars:0,done:false,position:0,total:0,letters:[],picked:[]};
-const gameInfo={frog:['🐸 Number-line hop','Move the frog to the lily pad using equal jumps.'],shop:['🛒 Coin shop','Build the exact price with coins.'],words:['🌻 Word garden','Tap the letter tiles in order to grow a word.'],sort:['🔬 Science sorter','Send each example to its correct science group.']};
+const gameInfo={
+ frog:['🐸 Number-line hop','Use equal jumps and number patterns.'],
+ shop:['🛒 Smart shopping','Build an exact amount and practice budgeting.'],
+ words:['🌻 Word builder','Use a clue to arrange letters into a word.'],
+ sort:['🔬 Science sorter','Classify an example using scientific properties.'],
+ fraction:['🍕 Fraction match','Compare fractions and choose the greatest value.'],
+ equation:['🧩 Equation quest','Find the missing value that makes an equation true.'],
+ context:['🕵️ Context clue detective','Use a sentence to unlock a word’s meaning.'],
+ lab:['🧪 Lab sequence','Put investigation steps in a safe, logical order.']
+};
 function renderGames(){
  $('gameGrade').value=state.grade;
  $('gameMenu').innerHTML=Object.entries(gameInfo).map(([key,v])=>`<button class="game-choice ${game.kind===key?'selected':''}" data-game="${key}"><strong>${v[0]}</strong><span>${v[1]}</span></button>`).join('');
@@ -78,14 +87,19 @@ function renderGames(){
 }
 function newGameRound(){
  game.round++;game.done=false;game.message="";game.total=0;game.picked=[];
- const n=Math.floor(Math.random()*8)+2;
- if(game.kind==='frog'){game.step=state.grade===1?1+Math.floor(Math.random()*2):2+Math.floor(Math.random()*3);game.start=Math.floor(Math.random()*4);game.position=game.start;game.target=game.start+game.step*(2+Math.floor(Math.random()*4));}
- if(game.kind==='shop'){game.target=state.grade===1?5+Math.floor(Math.random()*26):20+Math.floor(Math.random()*80);}
+ const level=YearCurriculum.levelInfo?.(state.grade)||{grade:state.grade,effective:state.grade},band=level.ve?level.effective:level.grade;
+ if(game.kind==='frog'){game.step=band===1?1+Math.floor(Math.random()*2):2+Math.floor(Math.random()*Math.min(6,band+1));game.start=Math.floor(Math.random()*5);game.position=game.start;game.target=game.start+game.step*(2+Math.floor(Math.random()*4));}
+ if(game.kind==='shop'){game.target=band===1?5+Math.floor(Math.random()*26):20+Math.floor(Math.random()*Math.min(180,50+band*20));}
  if(game.kind==='words'){
   const bank=[['cat','A pet that says meow'],['sun','Our nearest star'],['fish','An animal that swims using fins'],['book','Something you read'],['plant','A living thing with roots'],['rain','Water drops from clouds'],['garden','A place to grow flowers'],['rabbit','An animal with long ears'],['yellow','The color of a ripe banana'],['window','You can look outside through it'],['number','It tells how many'],['pencil','A tool used to write']];
-  const pick=bank[(game.round-1+Math.floor(Math.random()*bank.length))%(state.grade===1?8:bank.length)];game.word=pick[0];game.clue=pick[1];game.letters=Array.from(game.word).map((letter,i)=>({letter,id:i})).sort(()=>Math.random()-.5);
+  const upper=[['evidence','Information that supports a claim'],['analyze','Examine information carefully'],['variable','A factor that can change'],['efficient','Working well without waste'],['contrast','Show important differences'],['resource','Something useful for meeting a need']];
+  const source=band>=4?bank.concat(upper):bank,pick=source[(game.round-1+Math.floor(Math.random()*source.length))%(band===1?8:source.length)];game.word=pick[0];game.clue=pick[1];game.letters=Array.from(game.word).map((letter,i)=>({letter,id:i})).sort(()=>Math.random()-.5);
  }
  if(game.kind==='sort'){const index=Math.floor(Math.random()*YearCurriculum.scienceCases.length);game.case=YearCurriculum.scienceCases[index];game.side=Math.random()<.5?0:1;}
+ if(game.kind==='fraction'){const den=[4,5,6,8,10,12][Math.floor(Math.random()*6)],a=1+Math.floor(Math.random()*(den-1)),b=1+Math.floor(Math.random()*(den-1));game.fractions=[[a,den],[b,den],[Math.min(den-1,Math.max(a,b)+1),den]];game.answer=Math.max(...game.fractions.map(f=>f[0]/f[1]));}
+ if(game.kind==='equation'){game.coefficient=2+Math.floor(Math.random()*Math.min(8,band+2));game.x=2+Math.floor(Math.random()*12);game.constant=1+Math.floor(Math.random()*15);game.result=game.coefficient*game.x+game.constant;}
+ if(game.kind==='context'){const pack=YearCurriculum.build(state.grade,'english',1+Math.floor(Math.random()*365));game.contextQuestion=pack.questions.find(q=>/Vocabulary|Context/i.test(q.skill))||pack.questions.find(q=>q.choices);}
+ if(game.kind==='lab'){game.steps=['Ask a testable question','Plan a safe fair test','Collect and record evidence','Use evidence to make a conclusion'];game.shuffled=[...game.steps].sort(()=>Math.random()-.5);}
  drawGame();
 }
 function drawGame(){
@@ -94,6 +108,10 @@ function drawGame(){
  if(game.kind==='shop')content=`<div class="shop-item">🧸 <strong>${game.target}¢</strong></div><p>Pay exactly ${game.target} cents for the toy.</p><div class="coin-buttons">${[1,5,10,25].map(c=>`<button data-coin="${c}" class="coin">${c}¢</button>`).join('')}</div><p aria-live="polite">Your coins: <strong>${game.total}¢</strong></p><button id="clearCoins" class="secondary-btn">Clear coins</button> <button id="payCoins" class="primary-btn">Pay</button>`;
  if(game.kind==='words')content=`<p>${h(game.clue)}</p><div class="word-slots" aria-live="polite">${h(game.picked.map(i=>game.letters[i].letter).join(''))||'Tap letters below'}</div><div class="letter-tiles">${game.letters.map((t,i)=>`<button data-letter="${i}" ${game.picked.includes(i)?'disabled':''}>${t.letter}</button>`).join('')}</div><button id="undoLetter" class="secondary-btn">Undo</button> <button id="checkWord" class="primary-btn">Grow my word 🌻</button>`;
  if(game.kind==='sort')content=`<h3>${h(game.case[0])}</h3><p class="sort-object">${h(game.case[2+game.side])}</p><p>Choose the correct group.</p><div class="sort-bins">${[game.case[4],game.case[5]].map((c,i)=>`<button data-bin="${i}">${h(c)}</button>`).join('')}</div>`;
+ if(game.kind==='fraction')content=`<p>Choose the greatest fraction.</p><div class="sort-bins">${game.fractions.map((f,i)=>`<button data-fraction="${i}">${f[0]}/${f[1]}</button>`).join('')}</div><p>Hint: these fractions have the same denominator, so compare their numerators.</p>`;
+ if(game.kind==='equation')content=`<p>Solve for the missing value:</p><div class="game-equation">${game.coefficient}x + ${game.constant} = ${game.result}</div><div class="answer-wrap"><label for="gameEquationAnswer">x =</label><input id="gameEquationAnswer" inputmode="numeric"></div><button id="checkEquation" class="primary-btn">Check x</button>`;
+ if(game.kind==='context'){const z=game.contextQuestion;content=`${z.passage?`<p class="reading-passage">${h(z.passage)}</p>`:''}<p>${h(z.p)}</p><div class="sort-bins">${z.choices.map((c,i)=>`<button data-context="${i}">${h(c)}</button>`).join('')}</div>`;}
+ if(game.kind==='lab')content=`<p>Tap the investigation steps in the correct order.</p><div class="word-slots" aria-live="polite">${game.picked.map(i=>h(game.shuffled[i])).join(' → ')||'Start with the question'}</div><div class="lab-steps">${game.shuffled.map((s,i)=>`<button data-lab-step="${i}" ${game.picked.includes(i)?'disabled':''}>${h(s)}</button>`).join('')}</div><button id="undoLab" class="secondary-btn">Undo</button> <button id="checkLab" class="primary-btn">Check order</button>`;
  $('gameBoard').innerHTML=`<h2>${gameInfo[game.kind][0]}</h2><p>Round ${game.round} · ⭐ <span id="gameStars">${game.stars}</span> stars</p>${content}<p id="gameFeedback" class="game-feedback" role="status"></p><button id="nextGameRound" class="primary-btn hidden">Next round →</button>`;
  const feedback=(message,ok)=>{if(game.done)return;game.message=message;$('gameFeedback').textContent=message;if(ok){game.done=true;game.stars++;$('gameStars').textContent=game.stars;$('nextGameRound').classList.remove('hidden');$('gameBoard').querySelectorAll('button:not(#nextGameRound)').forEach(b=>b.disabled=true);}};
  $('nextGameRound').onclick=newGameRound;
@@ -108,6 +126,14 @@ function drawGame(){
   document.querySelectorAll('[data-letter]').forEach(b=>b.onclick=()=>{if(game.done)return;game.picked.push(Number(b.dataset.letter));drawGame()});$('undoLetter').onclick=()=>{game.picked.pop();drawGame()};$('checkWord').onclick=()=>{const answer=game.picked.map(i=>game.letters[i].letter).join('');feedback(answer===game.word?`Your word grew! ${game.word}.`:`Try again. The word begins with ${game.word[0]} and has ${game.word.length} letters.`,answer===game.word)};
  }
  if(game.kind==='sort')document.querySelectorAll('[data-bin]').forEach(b=>b.onclick=()=>feedback(Number(b.dataset.bin)===game.side?`Correct! ${game.case[6]}`:`Think about the properties. ${game.case[1]}`,Number(b.dataset.bin)===game.side));
+ if(game.kind==='fraction')document.querySelectorAll('[data-fraction]').forEach(b=>{b.onclick=()=>{const f=game.fractions[Number(b.dataset.fraction)];feedback(f[0]/f[1]===game.answer?`Correct! ${f[0]}/${f[1]} has the greatest numerator in this set.`:'Compare the numerators again because the denominators match.',f[0]/f[1]===game.answer)}});
+ if(game.kind==='equation')$('checkEquation').onclick=()=>{const value=Number($('gameEquationAnswer').value);feedback(value===game.x?`Correct! ${game.coefficient} × ${game.x} + ${game.constant} = ${game.result}.`:`Undo the + ${game.constant} first, then divide by ${game.coefficient}.`,value===game.x)};
+ if(game.kind==='context')document.querySelectorAll('[data-context]').forEach(b=>{b.onclick=()=>{const z=game.contextQuestion,choice=z.choices[Number(b.dataset.context)];feedback(choice===z.a?`Correct! ${z.explanation}`:'Read the nearby clues and try a meaning that fits the complete sentence.',choice===z.a)}});
+ if(game.kind==='lab'){
+  document.querySelectorAll('[data-lab-step]').forEach(b=>b.onclick=()=>{game.picked.push(Number(b.dataset.labStep));drawGame()});
+  $('undoLab').onclick=()=>{game.picked.pop();drawGame()};
+  $('checkLab').onclick=()=>{const answer=game.picked.map(i=>game.shuffled[i]);feedback(JSON.stringify(answer)===JSON.stringify(game.steps)?'Correct! A safe investigation moves from question to plan, evidence and conclusion.':'Check the order: begin with a question and make a plan before collecting evidence.',JSON.stringify(answer)===JSON.stringify(game.steps))};
+ }
  if(game.done){$('gameFeedback').textContent=game.message||'Well done! Ready for another round?';$('nextGameRound').classList.remove('hidden');$('gameBoard').querySelectorAll('button:not(#nextGameRound)').forEach(b=>b.disabled=true);}
 }
 $('gameGrade').onchange=e=>{state.grade=Number(e.target.value);localStorage.setItem('aqsaGrade',state.grade);game.round=0;game.stars=0;renderGames()};

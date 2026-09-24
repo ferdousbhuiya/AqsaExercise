@@ -1,11 +1,12 @@
 {
   "name": "aqsa-learning-garden-tests",
   "private": true,
-  "version": "0.3.0",
+  "version": "1.0.0",
   "scripts": {
-    "test": "node year.test.cjs",
+    "test": "node year.test.cjs && node upper-year.test.cjs && node dom.test.cjs && node upper-dom.test.cjs && node cloud.test.cjs",
     "test:dom": "node dom.test.cjs",
     "test:cloud": "node cloud.test.cjs",
+    "test:upper": "node upper-year.test.cjs && node upper-dom.test.cjs",
     "test:ui": "node ui.test.cjs"
   },
   "devDependencies": {

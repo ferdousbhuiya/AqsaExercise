@@ -15,7 +15,7 @@ w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=()=>{};
 w.HTMLCanvasElement.prototype.getContext=()=>new Proxy({}, {get:()=>()=>{}});
 const old={date:'2026-09-01',timestamp:1788307200000,grade:1,subject:'math',score:80,correct:8,total:10};
 w.localStorage.setItem('aqsaRecords',JSON.stringify([old]));
-for(const file of ['lessons.js','year-curriculum.js','app.js','enhancements.js'])new vm.Script(fs.readFileSync(path.join(root,file),'utf8'),{filename:file}).runInContext(dom.getInternalVMContext());
+for(const file of ['lessons.js','year-curriculum.js','upper-curriculum.js','app.js','enhancements.js'])new vm.Script(fs.readFileSync(path.join(root,file),'utf8'),{filename:file}).runInContext(dom.getInternalVMContext());
 const e=code=>new vm.Script(code).runInContext(dom.getInternalVMContext()),el=id=>w.document.getElementById(id),click=id=>el(id).click();
 assert.match(el('pathStatus').textContent,/Day 1 of 365/);
 for(const grade of [1,2])for(const subject of ['math','english','science']){

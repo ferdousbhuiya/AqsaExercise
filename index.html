@@ -34,7 +34,7 @@
         <div>
           <p class="eyebrow">TODAY'S ADVENTURE</p>
           <h1>Ready to grow your brain, Aqsa?</h1>
-          <p>Learn something new, then answer 14 mixed questions in each subject every day.</p>
+          <p>Learn something new, then complete a fresh mixed practice set in each subject every day.</p>
           <div class="streak"><span>⭐</span><strong id="streakCount">0 day streak</strong></div>
         </div>
         <div class="hero-portrait">
@@ -46,10 +46,7 @@
       <div class="section-heading">
         <div><p class="eyebrow">DAILY PRACTICE</p><h2>Three small wins</h2></div>
         <label>Level
-          <select id="gradeSelect">
-            <option value="1">Grade 1</option>
-            <option value="2">Grade 2</option>
-          </select>
+          <select id="gradeSelect"><option value="1">Grade 1</option><option value="2">Grade 2</option></select>
         </label>
       </div>
       <div id="subjectCards" class="subject-grid"></div>
@@ -108,7 +105,7 @@
         <div id="resultScore" class="big-score">0%</div>
         <p id="resultMessage"></p><div class="challenge-box"><h2>Take your learning further</h2><p id="resultChallenge"></p></div>
         <div class="result-actions">
-          <button id="anotherExercise" class="primary-btn">Try another 14 mixed questions</button>
+          <button id="anotherExercise" class="primary-btn">Try another fresh mixed set</button>
           <button id="resultHome" class="secondary-btn">Back to today</button>
         </div>
       </div>
@@ -122,7 +119,7 @@
 
     <section id="previewPage" class="page">
       <div class="page-title"><p class="eyebrow">FAMILY REVIEW</p><h1>Explore all 365 days</h1><p>View every question, its answer and explanation before Aqsa starts. Previewing never changes her scores.</p></div>
-      <div class="preview-controls"><label>Grade <select id="previewGrade"><option value="1">Grade 1</option><option value="2">Grade 2</option></select></label><label>Subject <select id="previewSubject"><option value="all">All subjects</option><option value="math">Math</option><option value="english">English</option><option value="science">Science</option></select></label><label>Day <input id="previewDay" type="number" min="1" max="365" value="1"></label><button id="previewPrev" class="secondary-btn">← Previous</button><button id="previewNext" class="secondary-btn">Next →</button><button id="previewAnswers" class="secondary-btn">Show all answers</button><button id="previewPrint" class="secondary-btn">Print this day</button></div>
+      <div class="preview-controls"><label>Level <select id="previewGrade"><option value="1">Grade 1</option><option value="2">Grade 2</option></select></label><label>Subject <select id="previewSubject"><option value="all">All subjects</option><option value="math">Math</option><option value="english">English</option><option value="science">Science</option></select></label><label>Day <input id="previewDay" type="number" min="1" max="365" value="1"></label><button id="previewPrev" class="secondary-btn">← Previous</button><button id="previewNext" class="secondary-btn">Next →</button><button id="previewAnswers" class="secondary-btn">Show all answers</button><button id="previewPrint" class="secondary-btn">Print this day</button></div>
       <details class="day-picker"><summary>Choose any day in the year</summary><div id="previewDays" class="day-grid"></div></details><div id="previewSets"></div>
     </section>
     <section id="gamesPage" class="page">
@@ -158,9 +155,10 @@
     </section>
   </main>
 
-  <footer><span>Made with care for Aqsa</span><span>365-day learning path · v0.4</span></footer>
+  <footer><span>Made with care for every learner</span><span>Grades 1–8 + VE pathways · 365 days · v1.0</span></footer>
   <script src="lessons.js"></script>
   <script src="year-curriculum.js"></script>
+  <script src="upper-curriculum.js"></script>
   <script src="app.js"></script>
   <script src="enhancements.js"></script>
   <script src="cloud-config.js"></script>

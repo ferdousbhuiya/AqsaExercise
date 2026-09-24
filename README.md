@@ -1,69 +1,109 @@
 # Aqsa's Learning Garden
 
-A daily learning app for Grades 1 and 2, with Math, English and Science, separate Learn and Exercises views, spoken reading, typed/multiple-choice answers, a handwriting canvas and a grown-up progress dashboard.
+An offline-first daily learning app for Grades 1–8 and supported VE 6, VE 7 and VE 8 pathways. It includes Math, English and Science lessons, mixed practice, games, read-aloud support, handwriting, year preview, date-wise progress and optional cross-device score synchronization.
 
-## Mixed daily learning, full-year review and games
+## Learning levels
 
-- **365 days for each grade and subject, with 14 questions per subject each day.** That is 42 daily question slots at one grade.
-- Every math set includes addition, subtraction, multiplication, division, word problems, number lines and number words. Three additional types rotate from place value, comparisons, patterns, shapes, measurement, time, money, fractions, data, missing numbers and odd/even numbers. Four core types receive an extra question, selected daily. No type occupies more than two slots.
-- Arithmetic uses two-digit values in Grade 1 and larger values in Grade 2, with gentle progression through the year. Multiplication and division use small exact groups. Column arithmetic, counter arrays, number lines, clocks, shapes, fraction bars and charts provide visual support.
-- English mixes story comprehension, spelling, nouns, verbs, adjectives, opposites, punctuation and five rotating language skills. Science mixes six topic concepts with prediction, tools, measurements, fair tests, observation and safety.
-- The regular set is deterministic for a grade and day. Bonus variants are separate. Core skills recur for reinforcement; these are generated mixed-practice sets, not a promise of zero repeated facts or question templates.
-- **Year preview** shows all 365 days, both grades and all subjects. Families can inspect every question, reveal answers/explanations, print a selected day and practice the exact previewed set without first completing other days. Previewing does not change scores.
-- **Play & learn** offers Number-line Hop, Coin Shop, Word Garden and Science Sorter. Games give feedback, retries and stars; they do not affect exercise scores. Game stars last for the current session.
-- **Reading voice** in Grown-up View offers available English voices, speed choices, a sample and Stop. Automatic selection favors voices labeled natural/enhanced where available, uses normal pitch and defaults to 0.95 speed. This is device speech, not newly recorded or cloud-generated narration. Actual voice quality and available voices depend on the device/browser.
-- Learn remains separate from Exercises and includes the daily focus, worked examples, optional activities and foundation lessons. The exercises combine skills across the curriculum from Day 1, as requested; they do not wait for the corresponding topic block.
-- The first visit starts Day 1; local calendar dates advance the path. The year start date can be changed in Grown-up View. After Day 365 the path stays at the finale, and every day remains available for review.
-- Prior scores are preserved. A revision marker prevents completed old single-topic sets from marking the new mixed sets complete.
+- Grades 1–5: elementary foundations and progressive skill growth.
+- Grades 6–8: middle-school ratios, algebra, geometry, statistics, literature, writing, life science, physical science, Earth/space science and scientific reasoning.
+- VE 6, VE 7 and VE 8: the official grade label is retained, but Math and English use a supported instructional band with shorter directions, familiar language, smaller steps and repeated practice. Science keeps age-appropriate grade-level topics with simplified explanations and evidence prompts.
+- VE materials use community, school, technology, budgeting, safety and life-skill contexts rather than childish labels or themes.
 
-## Score storage and device synchronization
+## Complete 365-day program
 
-Every completed exercise is saved immediately in browser storage with its date, time, grade, subject, learning day, score, correct count and total. The app remains usable offline.
+- Every level has 365 deterministic days for all three subjects. This provides 12,045 daily lesson/exercise sheets across the 11 pathways.
+- Grades 1–2 contain 14 mixed questions per subject each day. Grades 3–8 and VE contain 15.
+- Daily sets spiral skills instead of repeating one question pattern. Math includes operations, fractions, decimals or money, number lines or integers, patterns, equations, geometry, measurement, data and real-world problems. Difficulty grows by level.
+- English combines a fresh passage with main idea, details, sequence, cause and effect, inference, evidence, vocabulary, grammar, punctuation, sentence combining, transitions, purpose and summary.
+- Science combines the current unit with spiral review, vocabulary, models, variables, data, claims, safety, engineering and a daily application challenge.
+- Each level and subject has 13 four-week units plus a Day 365 finale. Bonus attempts create a separate deterministic variant rather than repeating the regular set.
 
-Optional cloud synchronization lets the same profile see scores on multiple phones, tablets and computers. A profile uses a unique username plus a 6–12 digit private parent PIN. A username alone cannot open the records. Existing local scores upload after the first sign-in, records from other devices download, and later results sync automatically when online. The PIN is hashed in the database; the browser stores an opaque session token that expires after 90 days of inactivity. Five incorrect attempts lock sign-in for five minutes.
+## Rich learning pages
 
-To activate cloud sync:
+Each daily lesson now includes:
 
-1. Create a Supabase project and run `supabase-schema.sql` in its SQL Editor.
-2. Copy the project URL and public anon key into `cloud-config.js`.
-3. Redeploy. Open **Grown-up View → Access scores on every device**, create the profile once, and use **Sign in and sync** on other devices.
+1. What to know
+2. Steps to use
+3. A worked example
+4. Vocabulary or visual model
+5. A common mistake
+6. A real-world connection
+7. A quick check
+8. A hands-on or explanation challenge
 
-The anon key is intentionally public. The database tables grant it no direct access; only the three validation functions in the schema can create a profile, sign in, and synchronize scores. Do not put the Supabase service-role key in this repository.
+The complete lesson library exposes all 13 yearly units for each subject and level. Learners can hear the lesson, study the example, browse the full-year sequence and then open that day’s mixed practice.
 
-If an existing project reports `function gen_salt(unknown, integer) does not exist`, run `supabase-repair.sql` once. It keeps existing profiles and scores and repairs the function schema path.
+## Games and accessibility
+
+The Play & Learn area includes eight level-aware games:
+
+- Number-line Hop
+- Smart Shopping
+- Word Builder
+- Science Sorter
+- Fraction Match
+- Equation Quest
+- Context Clue Detective
+- Lab Sequence
+
+Games give immediate feedback, retries and stars without changing exercise scores. The app also supports typed or multiple-choice answers, an Apple Pencil/touch writing canvas, selectable English device voices and adjustable reading speed.
+
+## Full-year family and teacher review
+
+Year Preview opens every day, lesson and question for any level. Answers and explanations can be revealed, a selected day can be printed, and the exact set can be practiced. Previewing does not change scores.
+
+The first visit starts Day 1. Local calendar dates advance the path, and the start date can be changed in Grown-up View. After Day 365 the path remains on the finale while all earlier days stay available.
+
+## Scores and cross-device synchronization
+
+Completed exercises are saved immediately in browser storage with date, time, level, subject, learning day, score, correct count and total. The app continues working offline.
+
+Optional Supabase synchronization lets one username and 6–12 digit parent PIN access the same score history on multiple devices. Existing local scores upload after sign-in, cloud records download, and later results retry automatically when online. PIN hashes remain in Supabase; the browser receives only an expiring session token.
+
+For a new Supabase project:
+
+1. Run `supabase-schema.sql` in Supabase SQL Editor.
+2. Put the project URL and public publishable/anon key in `cloud-config.js`.
+3. Deploy, create the profile once, then use the same username and PIN on other devices.
+
+For the existing Aqsa project upgrading from Grades 1–2, run `supabase-grade8-ve-migration.sql` once after deployment. It preserves all profiles, sessions and scores while allowing the new Grade 3–8 and VE level IDs.
+
+Do not put a Supabase service-role key in this repository. The public key has no direct table access; profile and score operations pass through validation functions.
 
 ## Run locally
 
-Serve this folder with any static web server:
+Serve the repository as a static site:
 
 ```bash
 python -m http.server 8080
 ```
 
-Open http://localhost:8080. No build, API key, runtime AI service or paid question service is required.
+Open `http://localhost:8080`. No build step, runtime AI service or paid question API is required.
 
 ## Validation
 
-```bash
-node tests/year.test.cjs
-```
-
-This checks all 2,190 daily sheets and two bonus variants each: deterministic output, distinct daily sets, no within-sheet duplicate prompts, at least ten skill types in every set, all seven required math types, a maximum of two questions per math type, valid choices, answer metadata, arithmetic cases and date boundaries (including leap days and daylight-saving changes).
-
-For the browser checks, install the development dependency and Chromium, start the server above, then run:
+Install the test dependencies and run the complete deterministic and DOM suite:
 
 ```bash
 npm install --prefix tests
-npm exec --prefix tests -- playwright install chromium
-node tests/ui.test.cjs
+npm test --prefix tests
 ```
 
-The browser checks (included for a browser-capable environment) cover navigation, scoring, stable daily/bonus sets, legacy score preservation, grade changes, Day 365, handwriting mode and mobile overflow.
+The release suite verifies:
 
-## Storage and limitations
+- all 12,045 daily sheets;
+- regular plus two bonus variants;
+- 535,455 generated question instances;
+- deterministic output and fresh day/bonus fingerprints;
+- answer/choice integrity and no duplicate prompts within a sheet;
+- all 11 level selectors, enriched lesson sections and 13-unit libraries;
+- Grade 1–8 and VE exercise rendering;
+- all eight games;
+- scoring, handwriting, voice, date changes and legacy-score preservation;
+- Grade 1–8 and VE cloud upload/download merge behavior.
 
-Progress, start date, grade and bonus counters are stored in this browser's local storage. Scores synchronize between browsers and devices only after cloud setup and profile sign-in. Clearing browser data signs out that device; signing in again restores cloud scores. Handwritten answers and open activities need a grown-up to check them; they are not recognized or scored automatically. Speech depends on the device's browser and installed voices.
+`tests/ui.test.cjs` provides an additional Playwright browser check when Chromium can run in the host environment.
 
-The path is a learning resource, not a claim of alignment with a particular school district's curriculum. It does not include embedded videos or cloud accounts.
+## Important notes
 
-DOM integration checks cover scoring, previewing all 365 days, answer reveal, playing all four games, preserving old scores and selecting voices. They run without launching a browser: `node tests/dom.test.cjs` after installing the test dependencies.
+The app is a broad learning and practice resource, not a claim of alignment with one school district’s pacing guide. VE content is scaffolded instructional material, not an individualized education plan or a replacement for teacher judgment. Handwritten work and open-ended challenges require adult or teacher review. Speech quality depends on the voices installed on the device.

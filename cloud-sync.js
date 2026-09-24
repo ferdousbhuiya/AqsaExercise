@@ -36,8 +36,8 @@ const CloudSync=(()=>{
    document.getElementById("cloudPin").value="";showState();await sync(true);
   }catch(error){status(error.message,"error")}
  }
- function validRecord(r){return r&&typeof r.recordId==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(r.date||"")&&[1,2].includes(Number(r.grade))&&["math","english","science"].includes(r.subject)&&Number.isFinite(Number(r.score))}
- function toCloud(r){return{id:r.recordId,date:r.date,timestamp:Number(r.timestamp)||Date.now(),grade:Number(r.grade),subject:r.subject,revision:String(r.revision||"legacy"),path_day:Number(r.pathDay)||null,path_start:r.pathStart||null,variant:Number(r.variant)||0,unit:String(r.unit||""),score:Number(r.score),correct:Number(r.correct)||0,total:Number(r.total)||0}}
+ function validRecord(r){return r&&typeof r.recordId==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(r.date||"")&&(YearCurriculum.levelIds||[1,2]).includes(Number(r.grade))&&["math","english","science"].includes(r.subject)&&Number.isFinite(Number(r.score))}
+ function toCloud(r){return{id:r.recordId,date:r.date,timestamp:Number(r.timestamp)||Date.now(),grade:Number(r.grade),subject:r.subject,revision:String(r.revision||"legacy"),path_day:Number(r.pathDay)||null,path_start:r.pathStart||null,variant:Math.max(0,Number(r.variant)||0),unit:String(r.unit||""),score:Number(r.score),correct:Number(r.correct)||0,total:Number(r.total)||0}}
  function fromCloud(r){return{recordId:r.id,date:r.activity_date,timestamp:Number(r.activity_timestamp),grade:r.grade,subject:r.subject,revision:r.revision,pathDay:r.path_day,pathStart:r.path_start,variant:r.variant,unit:r.unit,score:r.score,correct:r.correct,total:r.total}}
  async function sync(manual=false){
   if(syncing||!token()||!configured()||!navigator.onLine){if(manual&&!navigator.onLine)status("Offline. Scores remain safely stored on this device and will sync later.");return}

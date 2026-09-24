@@ -11,7 +11,7 @@ w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=()=>{};w.HTMLCanvasElem
 w.speechSynthesis={getVoices:()=>[],cancel:()=>{},speak:()=>{},addEventListener:()=>{}};w.SpeechSynthesisUtterance=class{};
 Object.defineProperty(w.navigator,'onLine',{value:true,configurable:true});
 w.AQSA_CLOUD_CONFIG={url:'https://project.supabase.co',anonKey:'public-anon-key-long-enough-for-test'};
-const local={recordId:'local-score-0001',date:'2026-09-22',timestamp:1000,grade:1,subject:'math',revision:'mixed-v2',pathDay:1,pathStart:'2026-09-22',variant:0,unit:'Mixed math',score:90,correct:13,total:14};
+const local={recordId:'local-score-0001',date:'2026-09-22',timestamp:1000,grade:108,subject:'math',revision:'full-v3',pathDay:1,pathStart:'2026-09-22',variant:0,unit:'Supported math',score:93,correct:14,total:15};
 w.localStorage.setItem('aqsaRecords',JSON.stringify([local]));
 const calls=[];
 w.fetch=async(url,options)=>{
@@ -19,12 +19,12 @@ w.fetch=async(url,options)=>{
  if(name==='create_learning_profile')return{ok:true,json:async()=>({ok:true,token:'token-1',username:'aqsa',display_name:'Aqsa'})};
  if(name==='login_learning_profile')return{ok:true,json:async()=>({ok:true,token:'token-2',username:'aqsa',display_name:'Aqsa'})};
  if(name==='sync_learning_scores')return{ok:true,json:async()=>({ok:true,records:[
-  {id:'cloud-copy',activity_date:'2026-09-22',activity_timestamp:1000,grade:1,subject:'math',revision:'mixed-v2',path_day:1,path_start:'2026-09-22',variant:0,unit:'Mixed math',score:90,correct:13,total:14},
+  {id:'cloud-copy',activity_date:'2026-09-22',activity_timestamp:1000,grade:108,subject:'math',revision:'full-v3',path_day:1,path_start:'2026-09-22',variant:0,unit:'Supported math',score:93,correct:14,total:15},
   {id:'other-device',activity_date:'2026-09-23',activity_timestamp:2000,grade:1,subject:'science',revision:'mixed-v2',path_day:2,path_start:'2026-09-22',variant:0,unit:'Mixed science',score:100,correct:14,total:14}
  ]})};
  throw Error(name);
 };
-for(const file of ['lessons.js','year-curriculum.js','app.js','enhancements.js','cloud-sync.js'])new vm.Script(fs.readFileSync(path.join(root,file),'utf8'),{filename:file}).runInContext(context);
+for(const file of ['lessons.js','year-curriculum.js','upper-curriculum.js','app.js','enhancements.js','cloud-sync.js'])new vm.Script(fs.readFileSync(path.join(root,file),'utf8'),{filename:file}).runInContext(context);
 if(w.document.readyState==='loading')w.document.dispatchEvent(new w.Event('DOMContentLoaded'));
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 (async()=>{
@@ -32,7 +32,7 @@ const wait=ms=>new Promise(r=>setTimeout(r,ms));
  $('cloudUsername').value='Aqsa';$('cloudPin').value='123456';$('cloudCreate').click();await wait(30);
  assert.equal(calls[0].name,'create_learning_profile');assert.equal(calls[0].body.p_username,'aqsa');assert.equal(calls[0].body.p_pin,'123456');
  assert.equal(w.localStorage.getItem('aqsaCloudSession'),'token-1');
- assert.equal(calls[1].name,'sync_learning_scores');assert.equal(calls[1].body.p_records.length,1);
+ assert.equal(calls[1].name,'sync_learning_scores');assert.equal(calls[1].body.p_records.length,1);assert.equal(calls[1].body.p_records[0].grade,108);
  const records=JSON.parse(w.localStorage.getItem('aqsaRecords'));
  assert.equal(records.length,2,'Natural-key duplicate from cloud is merged');
  assert.equal(records[0].recordId,'cloud-copy');assert.equal(records[1].recordId,'other-device');
